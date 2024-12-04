@@ -1,0 +1,16 @@
+---
+interface Props {
+  description: string;
+  minValue?: number;
+  value?: number;
+  icon?: string;
+}
+const { description = "", minValue = 0, value = 0, icon = "" } = Astro.props;
+---
+
+<li class=`step ${value >= minValue ? 'step-primary' : ''}` data-content="">
+  <div class="flex flex-row gap-4 items-center text-2xl px-2">
+    <i class={icon + " w-8"}></i>
+    {description}
+  </div>
+</li>

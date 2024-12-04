@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Mensch",
+        "value": 100,
+        "icon": "fa-solid fa-person"
+    },
+    {
+        "name": "Hund",
+        "value": 80,
+        "icon": "fa-solid fa-dog"
+    },
+    {
+        "name": "Frosch",
+        "value": 60,
+        "icon": "fa-solid fa-frog"
+    },
+    {
+        "name": "Wurm",
+        "value": 40,
+        "icon": "fa-solid fa-worm"
+    },
+    {
+        "name": "Baum",
+        "value": 20,
+        "icon": "fa-solid fa-tree"
+    },
+    {
+        "name": "Amöbe",
+        "value": 0,
+        "icon": "fa-solid fa-bacterium"
+    }
+]

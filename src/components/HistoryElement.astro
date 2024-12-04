@@ -1,0 +1,26 @@
+---
+import scale from "../assets/scale.json";
+
+interface Props {
+  name: string;
+  description?: string;
+  value: number;
+}
+const { name = "", description = "", value = 0 } = Astro.props;
+---
+
+<div>{name}:</div>
+<div class="flex flex-row items-center gap-2">
+  {
+    scale.map(
+      (item) =>
+        item.value === value && (
+          <>
+            <i class={item.icon + " w-6"} />
+            <div>{item.name}</div>
+          </>
+        )
+    )
+  }
+</div>
+<div>{description}</div>
