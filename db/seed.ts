@@ -4,8 +4,7 @@ import { db, Entry } from 'astro:db';
 export default async function seed() {
 
 	await db.insert(Entry).values([
-		{id: 1, name: "TobiasH", value: 40, date: new Date, comment: "Kaffee verschüttet"},
-		{id: 2, name: "RainerG", value: 100, date: new Date, comment: "Video hochgeladen"}
+		{id: 1, name: "TobiasH", value: 40, date: new Date(2024,11,4,11,34,0), description: "Kaffee verschüttet"}
 	]);
 }
 

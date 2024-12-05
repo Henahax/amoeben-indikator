@@ -6,7 +6,7 @@ const Entry = defineTable({
     name: column.text(),
     value: column.number(),
     date: column.date(),
-    comment: column.text()
+    description: column.text()
   }
 })
 

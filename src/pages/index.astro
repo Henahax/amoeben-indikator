@@ -5,77 +5,74 @@ import HistoryElement from "../components/HistoryElement.astro";
 
 import scale from "../assets/scale.json";
 
-let value = 60;
+let currentValue = 0;
+
+import { db, Entry, desc } from "astro:db";
+
+const entries = await db
+  .select()
+  .from(Entry)
+  .orderBy(desc(Entry.date))
+  .limit(5);
+
+currentValue = getValue(entries);
+
+function getValue(entries: any) {
+  let temp = 0;
+
+  entries.forEach((entry: any) => {
+    temp += entry.value;
+  });
+
+  return temp / entries.length;
+}
 ---
 
 <Layout>
-  <app class="flex flex-col items-center gap-8">
-    <h1 class="text-4xl">Amöben-Indikator</h1>
+  
+    <h1 class="text-4xl font-bold">Amöben-Indikator</h1>
 
-    <div class="flex flex-wrap justify-center gap-16">
-      <div class="p-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="flex">
         <ul class="steps steps-vertical mx-auto">
           {
-            scale.map((item) => (
-              <ScaleElement
-                description={item.name}
-                minValue={item.value}
-                value={value}
-                icon={item.icon}
-              />
-            ))
+            scale
+              .toReversed()
+              .map((item) => (
+                <ScaleElement
+                  description={item.name}
+                  minValue={item.value}
+                  value={currentValue}
+                  icon={item.icon}
+                />
+              ))
           }
         </ul>
       </div>
-      <div class="p-8 flex flex-col gap-4">
-        <h2 class="text-2xl">Letzte Einträge:</h2>
-        <div class="grid grid-cols-3 gap-8 items-center">
-          <HistoryElement
-            name="TobiasH"
-            description="Kaffee verschüttet"
-            value={40}
-          />
-          <HistoryElement
-            name="RainerG"
-            description="Video veröffentlicht"
-            value={100}
-          />
+      <div class="flex flex-col gap-4">
+        <h2 class="text-xl">Letzte Einträge:</h2>
+        <div class="entries">
+          {
+            entries.map(({ name, value, date, description }) => (
+              <HistoryElement
+                name={name}
+                description={description}
+                value={value}
+                date={date}
+              />
+            ))
+          }
         </div>
       </div>
     </div>
 
-	<button class="btn btn-primary" onclick="my_modal_5.showModal()">Neuer Eintrag</button>
-	<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
-	  <div class="modal-box">
-		<h3 class="text-lg font-bold">Neuer Eintrag</h3>
-		<p>Bitte vollständig ausfüllen</p>
-		<div class="modal-action">
-		  <form method="dialog" class="w-full flex flex-col gap-4">
-			<label class="input input-bordered flex items-center gap-2">
-				<i class="fa-solid fa-user"></i>
-				<input type="text" class="grow" placeholder="Name" />
-			  </label>
-			  <label class="form-control w-full">
-				<select class="select select-bordered w-full">
-				  {
-					  scale.map((item) => (
-						<option value={item.value}>{item.name}</option>
-					  ))
-					}
-				</select>
-			  </label>
-			  <label class="input input-bordered flex items-center gap-2">
-				<input type="text" class="grow" placeholder="Kommentar" />
-			  </label>
-			  <label class="input input-bordered flex items-center gap-2">
-				<i class="fa-solid fa-key"></i>
-				<input type="password" class="grow" placeholder="Passwort" />
-			  </label>
-			<button class="btn btn-primary">Absenden</button>
-		  </form>
-		</div>
-	  </div>
-	</dialog>
-
-  </app>
+    <a class="btn btn-primary" href="/new">Neuer Eintrag</a>
 </Layout>
+
+<style>
+  .entries {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem 4rem;
+  }
+</style>

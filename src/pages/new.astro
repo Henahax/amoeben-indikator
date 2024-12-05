@@ -1,0 +1,85 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { db, Entry } from "astro:db";
+import scale from "../assets/scale.json";
+
+// https://docs.astro.build/en/recipes/build-forms/
+
+const errors = { name: "", description: "" };
+
+if (Astro.request.method === "POST") {
+  try {
+    // Debugging Content-Type
+    console.log(Astro.request.headers.get("content-type"));
+
+    // Parse form data
+    const formData = await Astro.request.formData();
+    const name = formData.get("name");
+    const value = formData.get("value");
+    const description = formData.get("description");
+    const date = new Date();
+
+    if (typeof name !== "string" || name.length < 1) {
+      errors.name += "Please enter a username. ";
+    }
+
+    const hasErrors = Object.values(errors).some(msg => msg);
+
+    if (!hasErrors) {
+      console.log("Inserting data");
+      await db.insert(Entry).values({ name, value, description, date });
+      return Astro.redirect("/");
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+
+<Layout>
+  <form method="POST" enctype="application/x-www-form-urlencoded" class="flex flex-col gap-4 grow">
+    <h3 class="text-2xl">Neuer Eintrag</h3>
+
+    <label for="name">
+      <input
+        id="name"
+        class="input input-bordered w-full"
+        name="name"
+        placeholder="Name"
+      />
+    </label>
+    {errors.name && <p>{errors.name}</p>}
+
+
+    <label for="value">
+      <select id="value" name="value" class="select select-bordered w-full">
+        {scale.map((item) => <option value={item.value}>{item.name}</option>)}
+      </select>
+    </label>
+
+    <label for="description">
+      <textarea
+        id="description"
+        name="description"
+        class="textarea textarea-bordered w-full"
+        placeholder="Beschreibung"></textarea>
+    </label>
+    {errors.description && <p>{errors.description}</p>}
+
+    <label for="password">
+      <input
+        id="password"
+        type="password"
+        class="textarea textarea-bordered w-full"
+        name="password"
+        placeholder="Passwort"
+      />
+    </label>
+    <div class="flex flex-row gap-4 w-full justify-between">
+      <a class="btn grow" href="/">Abbrechen</a>
+      <button class="btn btn-primary grow" type="submit">Senden</button>
+    </div>
+  </form>
+</Layout>

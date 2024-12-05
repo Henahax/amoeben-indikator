@@ -1,23 +1,8 @@
 [
     {
-        "name": "Mensch",
-        "value": 100,
-        "icon": "fa-solid fa-person"
-    },
-    {
-        "name": "Hund",
-        "value": 80,
-        "icon": "fa-solid fa-dog"
-    },
-    {
-        "name": "Frosch",
-        "value": 60,
-        "icon": "fa-solid fa-frog"
-    },
-    {
-        "name": "Wurm",
-        "value": 40,
-        "icon": "fa-solid fa-worm"
+        "name": "Amöbe",
+        "value": 0,
+        "icon": "fa-solid fa-bacterium"
     },
     {
         "name": "Baum",
@@ -25,8 +10,23 @@
         "icon": "fa-solid fa-tree"
     },
     {
-        "name": "Amöbe",
-        "value": 0,
-        "icon": "fa-solid fa-bacterium"
+        "name": "Wurm",
+        "value": 40,
+        "icon": "fa-solid fa-worm"
+    },
+    {
+        "name": "Frosch",
+        "value": 60,
+        "icon": "fa-solid fa-frog"
+    },
+    {
+        "name": "Hund",
+        "value": 80,
+        "icon": "fa-solid fa-dog"
+    },
+    {
+        "name": "Mensch",
+        "value": 100,
+        "icon": "fa-solid fa-person"
     }
 ]
