@@ -13,5 +13,5 @@ const Entry = defineTable({
 
 // https://astro.build/db/config
 export default defineDb({
-  tables: { Entry }
+  tables: { Entry },
 });
