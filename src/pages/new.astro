@@ -48,8 +48,9 @@ if (Astro.request.method === "POST") {
       await db.insert(Entry).values({ name, value, description, date });
       return Astro.redirect("/");
     }
-  } catch (error) {
-    console.error("Error:", error.message);
+  } catch (error:unknown)
+  {
+    console.error("Error:", error?.message);
   }
 }
 
