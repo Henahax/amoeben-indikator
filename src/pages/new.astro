@@ -45,6 +45,7 @@ if (Astro.request.method === "POST") {
     const hasErrors = Object.values(errors).some((msg) => msg);
 
     if (!hasErrors) {
+      console.log("Inserting");
       await db.insert(Entry).values({ name, value, description, date });
       return Astro.redirect("/");
     }
@@ -53,7 +54,7 @@ if (Astro.request.method === "POST") {
   }
 }
 
-function hash(string) {
+function hash(string:string) {
   return createHash("sha256").update(string).digest("hex");
 }
 ---
