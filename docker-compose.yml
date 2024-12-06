@@ -7,6 +7,17 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
+      - ASTRO_DB_REMOTE_URL= 
     ports:
       - 8083:4321
     restart: unless-stopped
+  db:
+    image: ghcr.io/tursodatabase/libsql-server:latest
+    platform: linux/amd64
+    ports:
+      - "8084:8080"
+      - "5001:5001"
+    # environment:
+    #   - SQLD_NODE=primary
+    volumes:
+      - ./data/libsql:/var/lib/sqld
