@@ -12,7 +12,6 @@ if (Astro.request.method === "POST") {
   try {
     // Debugging Content-Type
     const contentType = Astro.request.headers.get("content-type");
-    console.log("Content-Type:", contentType);
 
     if (
       !contentType ||
@@ -45,7 +44,7 @@ if (Astro.request.method === "POST") {
     const hasErrors = Object.values(errors).some((msg) => msg);
 
     if (!hasErrors) {
-      console.log("Inserting");
+      console.log("Inserting Data");
       await db.insert(Entry).values({ name, value, description, date });
       return Astro.redirect("/");
     }
