@@ -1,16 +1,25 @@
 ---
+export const prerender = false;
+
 import Layout from "../layouts/Layout.astro";
 import { db, Entry } from "astro:db";
 import scale from "../assets/scale.json";
+import { createHash } from "crypto";
 
-// https://docs.astro.build/en/recipes/build-forms/
-
-const errors = { name: "", description: "" };
+const errors = { name: "", description: "", password: "" };
 
 if (Astro.request.method === "POST") {
   try {
     // Debugging Content-Type
-    console.log(Astro.request.headers.get("content-type"));
+    const contentType = Astro.request.headers.get("content-type");
+    console.log("Content-Type:", contentType);
+
+    if (
+      !contentType ||
+      !["application/x-www-form-urlencoded", "multipart/form-data"].some((type) => contentType.includes(type))
+    ) {
+      throw new Error(`Unsupported Content-Type: ${contentType}`);
+    }
 
     // Parse form data
     const formData = await Astro.request.formData();
@@ -18,23 +27,34 @@ if (Astro.request.method === "POST") {
     const value = formData.get("value");
     const description = formData.get("description");
     const date = new Date();
+    const password = formData.get("password");
 
     if (typeof name !== "string" || name.length < 1) {
-      errors.name += "Please enter a username. ";
+      errors.name += "Bitte Name eingeben.";
     }
 
-    const hasErrors = Object.values(errors).some(msg => msg);
+    if (typeof description !== "string" || description.length < 1) {
+      errors.description += "Bitte Beschreibung eingeben.";
+    }
+
+    // supergeheim
+    if (hash(password) !== "8881a0528946b82c745f1b8f548821aef60c2d18b67c5a156df02ae9095ee08c") {
+      errors.password += "Falsches Passwort";
+    }
+
+    const hasErrors = Object.values(errors).some((msg) => msg);
 
     if (!hasErrors) {
-      console.log("Inserting data");
       await db.insert(Entry).values({ name, value, description, date });
       return Astro.redirect("/");
     }
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    }
+    console.error("Error:", error.message);
   }
+}
+
+function hash(string) {
+  return createHash("sha256").update(string).digest("hex");
 }
 ---
 
@@ -50,8 +70,7 @@ if (Astro.request.method === "POST") {
         placeholder="Name"
       />
     </label>
-    {errors.name && <p>{errors.name}</p>}
-
+    {errors.name && <p class="text-red-500">{errors.name}</p>}
 
     <label for="value">
       <select id="value" name="value" class="select select-bordered w-full">
@@ -66,7 +85,7 @@ if (Astro.request.method === "POST") {
         class="textarea textarea-bordered w-full"
         placeholder="Beschreibung"></textarea>
     </label>
-    {errors.description && <p>{errors.description}</p>}
+    {errors.description && <p class="text-red-500">{errors.description}</p>}
 
     <label for="password">
       <input
@@ -77,6 +96,8 @@ if (Astro.request.method === "POST") {
         placeholder="Passwort"
       />
     </label>
+    {errors.password && <p class="text-red-500">{errors.password}</p>}
+
     <div class="flex flex-row gap-4 w-full justify-between">
       <a class="btn grow" href="/">Abbrechen</a>
       <button class="btn btn-primary grow" type="submit">Senden</button>
