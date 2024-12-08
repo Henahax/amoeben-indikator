@@ -7,7 +7,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - ASTRO_DB_REMOTE_URL=file:path/to/file.db
     ports:
       - 8083:4321
     restart: unless-stopped
