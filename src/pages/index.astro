@@ -7,15 +7,38 @@ import scale from "../assets/scale.json";
 
 let currentValue = 0;
 
-function getValue(entries: any) {
-  let temp = 0;
 
-  entries.forEach((entry: any) => {
-    temp += entry.value;
+import { db } from '../utils/db';
+const cms = await db.query.entries.findMany();
+
+
+
+
+
+
+
+import { entries } from "../models/schema";
+// import { createHash } from "crypto";
+
+// export const prerender = true;
+
+if (Astro.request.method === 'POST') {
+  const data = await Astro.request.formData();
+
+  const name = data.get("name");
+  const value = data.get("value");
+  const description = data.get("description");
+  await db.insert(entries).values({
+    name: name as string,
+    description: description as string
   });
-
-  return temp / entries.length;
 }
+
+/*
+function hash(string: string) {
+  return createHash("sha256").update(string).digest("hex");
+}
+*/
 ---
 
 <Layout>
@@ -42,12 +65,58 @@ function getValue(entries: any) {
       <div class="flex flex-col gap-4">
         <h2 class="text-xl">Letzte Einträge:</h2>
         <div class="entries">
+          {cms.map((entry) => <HistoryElement entry={entry} />)}
           <!-- TODO -->
         </div>
       </div>
     </div>
 
-    <a class="btn btn-primary" href="/new">Neuer Eintrag</a>
+    <form
+    method="POST"
+    enctype="application/x-www-form-urlencoded"
+    class="flex flex-col gap-4 grow"
+  >
+    <h3 class="text-2xl">Neuer Eintrag</h3>
+
+    <label for="name">
+      <input
+        id="name"
+        class="input input-bordered w-full"
+        name="name"
+        placeholder="Name"
+      />
+    </label>
+    <!--
+    <label for="value">
+      <select id="value" name="value" class="select select-bordered w-full">
+        {scale.map((item) => <option value={item.value}>{item.name}</option>)}
+      </select>
+    </label>
+    -->
+
+    <label for="description">
+      <textarea
+        id="description"
+        name="description"
+        class="textarea textarea-bordered w-full"
+        placeholder="Beschreibung"></textarea>
+    </label>
+    <!--
+    <label for="password">
+      <input
+        id="password"
+        type="password"
+        class="textarea textarea-bordered w-full"
+        name="password"
+        placeholder="Passwort"
+      />
+    </label>
+    -->
+    <div class="flex flex-row gap-4 w-full justify-between">
+      <a class="btn grow" href="/">Abbrechen</a>
+      <button class="btn btn-primary grow" type="submit">Senden</button>
+    </div>
+  </form>
 </Layout>
 
 <style>

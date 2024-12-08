@@ -1,67 +1,40 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import scale from "../assets/scale.json";
-import { createHash } from "crypto";
 
-const errors = { name: "", description: "", password: "" };
+import { db } from "../utils/db";
+import { entries } from "../models/schema";
+// import { createHash } from "crypto";
+
+// export const prerender = true;
 
 if (Astro.request.method === "POST") {
-  try {
-    // Debugging Content-Type
-    const contentType = Astro.request.headers.get("content-type");
+  const data = await Astro.request.formData();
 
-    if (
-      !contentType ||
-      !["application/x-www-form-urlencoded", "multipart/form-data"].some((type) => contentType.includes(type))
-    ) {
-      throw new Error(`Unsupported Content-Type: ${contentType}`);
-    }
-
-    // Parse form data
-    const formData = await Astro.request.formData();
-    const name = formData.get("name");
-    const value = formData.get("value");
-    const description = formData.get("description");
-    const date = new Date();
-    const password = formData.get("password");
-
-    if (typeof name !== "string" || name.length < 1) {
-      errors.name += "Bitte Name eingeben.";
-    }
-
-    if (typeof description !== "string" || description.length < 1) {
-      errors.description += "Bitte Beschreibung eingeben.";
-    }
-
-    // supergeheim
-    if (hash(password) !== "8881a0528946b82c745f1b8f548821aef60c2d18b67c5a156df02ae9095ee08c") {
-      errors.password += "Falsches Passwort";
-    }
-
-    const hasErrors = Object.values(errors).some((msg) => msg);
-
-    if (!hasErrors) {
-      console.log("Inserting Data");
-
-
-      // await db.insert(Entry).values({ name, value, description, date });
-
-
-      return Astro.redirect("/");
-    }
-  } catch (error:unknown)
-  {
-    console.error("Error:", error?.message);
-  }
+  const name = data.get("name");
+  const value = data.get("value");
+  const description = data.get("description");
+  await db.insert(entries).values({
+    name: name as string,
+    value: value as unknown as number,
+    description: description as string,
+  });
 }
 
-function hash(string:string) {
+/*
+function hash(string: string) {
   return createHash("sha256").update(string).digest("hex");
 }
+*/
+
 ---
 
 <Layout>
-  <form method="POST" enctype="application/x-www-form-urlencoded" class="flex flex-col gap-4 grow">
+  <form
+    method="POST"
+    enctype="application/x-www-form-urlencoded"
+    class="flex flex-col gap-4 grow"
+  >
     <h3 class="text-2xl">Neuer Eintrag</h3>
 
     <label for="name">
@@ -72,8 +45,6 @@ function hash(string:string) {
         placeholder="Name"
       />
     </label>
-    {errors.name && <p class="text-red-500">{errors.name}</p>}
-
     <label for="value">
       <select id="value" name="value" class="select select-bordered w-full">
         {scale.map((item) => <option value={item.value}>{item.name}</option>)}
@@ -87,8 +58,7 @@ function hash(string:string) {
         class="textarea textarea-bordered w-full"
         placeholder="Beschreibung"></textarea>
     </label>
-    {errors.description && <p class="text-red-500">{errors.description}</p>}
-
+    <!--
     <label for="password">
       <input
         id="password"
@@ -98,8 +68,7 @@ function hash(string:string) {
         placeholder="Passwort"
       />
     </label>
-    {errors.password && <p class="text-red-500">{errors.password}</p>}
-
+    -->
     <div class="flex flex-row gap-4 w-full justify-between">
       <a class="btn grow" href="/">Abbrechen</a>
       <button class="btn btn-primary grow" type="submit">Senden</button>
