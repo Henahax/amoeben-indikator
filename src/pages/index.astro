@@ -7,16 +7,6 @@ import scale from "../assets/scale.json";
 
 let currentValue = 0;
 
-import { db, Entry, desc } from "astro:db";
-
-const entries = await db
-  .select()
-  .from(Entry)
-  .orderBy(desc(Entry.date))
-  .limit(5);
-
-currentValue = getValue(entries);
-
 function getValue(entries: any) {
   let temp = 0;
 
@@ -52,16 +42,7 @@ function getValue(entries: any) {
       <div class="flex flex-col gap-4">
         <h2 class="text-xl">Letzte Einträge:</h2>
         <div class="entries">
-          {
-            entries.map(({ name, value, date, description }) => (
-              <HistoryElement
-                name={name}
-                description={description}
-                value={value}
-                date={date}
-              />
-            ))
-          }
+          <!-- TODO -->
         </div>
       </div>
     </div>

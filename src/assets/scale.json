@@ -6,27 +6,27 @@
     },
     {
         "name": "Baum",
-        "value": 20,
+        "value": 0.2,
         "icon": "fa-solid fa-tree"
     },
     {
         "name": "Wurm",
-        "value": 40,
+        "value": 0.4,
         "icon": "fa-solid fa-worm"
     },
     {
         "name": "Frosch",
-        "value": 60,
+        "value": 0.6,
         "icon": "fa-solid fa-frog"
     },
     {
         "name": "Hund",
-        "value": 80,
+        "value": 0.8,
         "icon": "fa-solid fa-dog"
     },
     {
         "name": "Mensch",
-        "value": 100,
+        "value": 1,
         "icon": "fa-solid fa-person"
     }
 ]

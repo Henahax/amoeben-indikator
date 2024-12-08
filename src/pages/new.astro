@@ -1,8 +1,5 @@
 ---
-export const prerender = false;
-
 import Layout from "../layouts/Layout.astro";
-import { db, Entry } from "astro:db";
 import scale from "../assets/scale.json";
 import { createHash } from "crypto";
 
@@ -45,7 +42,11 @@ if (Astro.request.method === "POST") {
 
     if (!hasErrors) {
       console.log("Inserting Data");
-      await db.insert(Entry).values({ name, value, description, date });
+
+
+      // await db.insert(Entry).values({ name, value, description, date });
+
+
       return Astro.redirect("/");
     }
   } catch (error:unknown)
