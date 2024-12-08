@@ -21,6 +21,10 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "${{ secrets.EMAIL }}"
 
+
+      - name: Dependecies
+        run: npm install
+
       - name: Dependecies
         run: npm ci
 
