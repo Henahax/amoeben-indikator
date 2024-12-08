@@ -7,116 +7,61 @@ import scale from "../assets/scale.json";
 
 let currentValue = 0;
 
-
-import { db } from '../utils/db';
-const cms = await db.query.entries.findMany();
-
-
-
-
-
-
-
 import { entries } from "../models/schema";
-// import { createHash } from "crypto";
+import { db } from "../utils/db";
+import { desc } from "drizzle-orm";
 
-// export const prerender = true;
+const cms = await db.query.entries.findMany({
+	limit: 5,
+  orderBy: desc(entries.date)
+});
 
-if (Astro.request.method === 'POST') {
-  const data = await Astro.request.formData();
+currentValue = getValue(cms);
 
-  const name = data.get("name");
-  const value = data.get("value");
-  const description = data.get("description");
-  await db.insert(entries).values({
-    name: name as string,
-    description: description as string
-  });
+function getValue(entries: any) {
+    let temp = 0;
+
+    entries.forEach((entry: any) => {
+        temp += entry.value;
+    });
+
+    return temp / entries.length;
 }
-
-/*
-function hash(string: string) {
-  return createHash("sha256").update(string).digest("hex");
-}
-*/
 ---
 
 <Layout>
-  
-    <h1 class="text-4xl font-bold">Amöben-Indikator</h1>
+  <h1 class="text-4xl font-bold">Amöben-Indikator</h1>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-      <div class="flex">
-        <ul class="steps steps-vertical mx-auto">
-          {
-            scale
-              .toReversed()
-              .map((item) => (
-                <ScaleElement
-                  description={item.name}
-                  minValue={item.value}
-                  value={currentValue}
-                  icon={item.icon}
-                />
-              ))
-          }
-        </ul>
-      </div>
-      <div class="flex flex-col gap-4">
-        <h2 class="text-xl">Letzte Einträge:</h2>
-        <div class="entries">
-          {cms.map((entry) => <HistoryElement entry={entry} />)}
-          <!-- TODO -->
-        </div>
-      </div>
-    </div>
-
-    <form
-    method="POST"
-    enctype="application/x-www-form-urlencoded"
-    class="flex flex-col gap-4 grow"
+  <div
+    class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-16 items-center"
   >
-    <h3 class="text-2xl">Neuer Eintrag</h3>
-
-    <label for="name">
-      <input
-        id="name"
-        class="input input-bordered w-full"
-        name="name"
-        placeholder="Name"
-      />
-    </label>
-    <!--
-    <label for="value">
-      <select id="value" name="value" class="select select-bordered w-full">
-        {scale.map((item) => <option value={item.value}>{item.name}</option>)}
-      </select>
-    </label>
-    -->
-
-    <label for="description">
-      <textarea
-        id="description"
-        name="description"
-        class="textarea textarea-bordered w-full"
-        placeholder="Beschreibung"></textarea>
-    </label>
-    <!--
-    <label for="password">
-      <input
-        id="password"
-        type="password"
-        class="textarea textarea-bordered w-full"
-        name="password"
-        placeholder="Passwort"
-      />
-    </label>
-    -->
-    <div class="flex flex-row gap-4 w-full justify-between">
-      <a class="btn grow" href="/">Abbrechen</a>
-      <button class="btn btn-primary grow" type="submit">Senden</button>
+    <div class="flex">
+      <ul class="steps steps-vertical mx-auto">
+        {
+          scale
+            .toReversed()
+            .map((item) => (
+              <ScaleElement
+                description={item.name}
+                minValue={item.value}
+                value={currentValue}
+                icon={item.icon}
+              />
+            ))
+        }
+      </ul>
     </div>
-  </form>
+    <div class="flex flex-col gap-4">
+      <h2 class="text-xl">Letzte Einträge:</h2>
+      <div class="entries">
+        {cms.map((entry) => <HistoryElement entry={entry} />)}
+      </div>
+    </div>
+    
+  </div>
+  <div class="flex">
+    <a class="btn btn-primary" href="/new">Neuer Eintrag</a>
+  </div>
 </Layout>
 
 <style>

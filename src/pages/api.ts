@@ -1,10 +1,15 @@
 let value = 0;
 
-import { db, Entry, desc } from "astro:db";
+import { entries } from "../models/schema";
+import { db } from "../utils/db";
+import { desc } from "drizzle-orm";
 
-const entries = await db.select().from(Entry).orderBy(desc(Entry.date)).limit(5);
+const cms = await db.query.entries.findMany({
+	limit: 5,
+  orderBy: desc(entries.date)
+});
 
-value = getValue(entries);
+value = getValue(cms);
 
 function getValue(entries: any) {
     let temp = 0;
