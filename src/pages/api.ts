@@ -2,9 +2,9 @@ let value = 0;
 
 import entries from "../../data.json"
 entries.sort((a, b) => b.date.localeCompare(a.date));
-entries = entries.slice(0, 5)
+var entries2 = entries.slice(0, 5)
 
-value = getValue(entries)
+value = getValue(entries2)
 function getValue(entries: any) {
     let temp = 0;
 

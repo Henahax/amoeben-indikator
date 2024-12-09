@@ -7,10 +7,10 @@ import scale from "../assets/scale.json";
 
 import entries from "../../data.json"
 entries.sort((a, b) => b.date.localeCompare(a.date));
-entries = entries.slice(0, 5)
+var entries2 = entries.slice(0, 5)
 
 let currentValue = 0;
-currentValue = getValue(entries);
+currentValue = getValue(entries2);
 
 function getValue(entries: any) {
     let temp = 0;
@@ -48,7 +48,7 @@ function getValue(entries: any) {
     <div class="flex flex-col gap-4">
       <h2 class="text-xl">Letzte Einträge:</h2>
       <div class="entries">
-        {entries.map((entry) => <HistoryElement name={entry.name} value={entry.value} description={entry.description} date={entry.date} />)}
+        {entries2.map((entry) => <HistoryElement name={entry.name} value={entry.value} description={entry.description} date={entry.date} />)}
       </div>
     </div>
     
