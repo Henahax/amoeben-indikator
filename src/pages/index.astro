@@ -8,13 +8,30 @@ import scale from "../assets/scale.json";
 let currentValue = 0;
 
 import { entries } from "../models/schema";
-import { db } from "../db";
-import { desc } from "drizzle-orm";
+
+// Initialize db connection (replace with your connection details)
+import { config } from "dotenv";
+import { desc } from 'drizzle-orm';
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+
+config({ path: ".env" });
+
+const connection = postgres({
+  host: process.env.PG_HOST ?? "localhost",
+  port: Number(process.env.PG_PORT) ?? 5432,
+  user: process.env.PG_USER ?? "postgres",
+  password: process.env.PG_PASSWORD ?? "postgres",
+  database: process.env.PG_DATABASE ?? "postgres",
+});
+
+const db = drizzle(connection, { schema: { entries } });
 
 const cms = await db.query.entries.findMany({
-	limit: 5,
+  limit: 5,
   orderBy: desc(entries.date)
 });
+
 
 currentValue = getValue(cms);
 
