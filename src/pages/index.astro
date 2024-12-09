@@ -5,35 +5,12 @@ import HistoryElement from "../components/HistoryElement.astro";
 
 import scale from "../assets/scale.json";
 
+import entries from "../../data.json"
+entries.sort((a, b) => b.date.localeCompare(a.date));
+entries = entries.slice(0, 5)
+
 let currentValue = 0;
-
-import { entries } from "../models/schema";
-
-// Initialize db connection (replace with your connection details)
-import { config } from "dotenv";
-import { desc } from 'drizzle-orm';
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-
-config({ path: ".env" });
-
-const connection = postgres({
-  host: process.env.PG_HOST ?? "localhost",
-  port: Number(process.env.PG_PORT) ?? 5432,
-  user: process.env.PG_USER ?? "postgres",
-  password: process.env.PG_PASSWORD ?? "postgres",
-  database: process.env.PG_DATABASE ?? "postgres",
-});
-
-const db = drizzle(connection, { schema: { entries } });
-
-const cms = await db.query.entries.findMany({
-  limit: 5,
-  orderBy: desc(entries.date)
-});
-
-
-currentValue = getValue(cms);
+currentValue = getValue(entries);
 
 function getValue(entries: any) {
     let temp = 0;
@@ -44,20 +21,6 @@ function getValue(entries: any) {
 
     return temp / entries.length;
 }
-
-import { initializeDb } from "../db/index";
-
-async function startApp() {
-  await initializeDb();
-  console.log("Starting server...");
-  // Your app's startup logic
-}
-
-startApp().catch((err) => {
-  console.error("App failed to start:", err);
-  process.exit(1);
-});
-
 ---
 
 <Layout>
@@ -85,7 +48,7 @@ startApp().catch((err) => {
     <div class="flex flex-col gap-4">
       <h2 class="text-xl">Letzte Einträge:</h2>
       <div class="entries">
-        {cms.map((entry) => <HistoryElement entry={entry} />)}
+        {entries.map((entry) => <HistoryElement name={entry.name} value={entry.value} description={entry.description} date={entry.date} />)}
       </div>
     </div>
     

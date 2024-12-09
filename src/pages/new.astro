@@ -4,20 +4,29 @@ export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 import scale from "../assets/scale.json";
 import { createHash } from "crypto";
-import { db } from "../db";
+import fs from "fs";
 
-import { entries } from "../models/schema";
+var data = fs.readFileSync("data.json");
+var myObject = JSON.parse(data);
+
+interface entry {
+  name: string;
+  value: number;
+  description: string;
+  data: string;
+}
 
 const errors = { name: "", description: "", password: "" };
 
 if (Astro.request.method === "POST") {
   try {
-    const data = await Astro.request.formData();
-    const name = data.get("name");
-    const value = data.get("value");
-    const description = data.get("description");
-    const password = data.get("password");
+    const formData = await Astro.request.formData();
+    const name = formData.get("name");
+    const value = formData.get("value");
+    const description = formData.get("description");
+    const password = formData.get("password");
 
+    // Form validation
     if (typeof name !== "string" || name.length < 1) {
       errors.name += "Bitte Name eingeben.";
     }
@@ -26,20 +35,37 @@ if (Astro.request.method === "POST") {
       errors.description += "Bitte Beschreibung eingeben.";
     }
 
-    if (
-      hash(password) !==
-      "8881a0528946b82c745f1b8f548821aef60c2d18b67c5a156df02ae9095ee08c"
-    ) {
+    if (hash(password as string) !== "8881a0528946b82c745f1b8f548821aef60c2d18b67c5a156df02ae9095ee08c") {
       errors.password += "Falsches Passwort.";
     }
 
     const hasErrors = Object.values(errors).some((msg) => msg);
     if (!hasErrors) {
-      await db.insert(entries).values({
-        name: name as string,
-        description: description as string,
-        value: value as number,
+      // Ensure that 'value' is converted to a number
+      const parsedValue = value ? Number(value) : 0;
+
+      // Create a new entry object
+      let newData: entry = {
+        name: name,
+        value: parsedValue,
+        description: description,
+        date: new Date().toISOString(), // Use the current date
+      };
+
+      console.log(newData);
+
+      // Push the new entry to the existing data array
+      myObject.push(newData);
+
+      console.log(myObject);
+
+      // Write the updated array back to the JSON file
+      fs.writeFile("data.json", JSON.stringify(myObject, null, 2), (err) => {
+        if (err) throw err;
+        console.log("New data added");
       });
+
+      // Redirect to home
       return Astro.redirect("/");
     }
   } catch (error) {
@@ -52,6 +78,7 @@ if (Astro.request.method === "POST") {
 function hash(string: string) {
   return createHash("sha256").update(string).digest("hex");
 }
+
 ---
 
 <Layout>

@@ -1,16 +1,10 @@
 let value = 0;
 
-import { entries } from "../models/schema";
-import { db } from "../db";
-import { desc } from "drizzle-orm";
+import entries from "../../data.json"
+entries.sort((a, b) => b.date.localeCompare(a.date));
+entries = entries.slice(0, 5)
 
-const cms = await db.query.entries.findMany({
-	limit: 5,
-  orderBy: desc(entries.date)
-});
-
-value = getValue(cms);
-
+value = getValue(entries)
 function getValue(entries: any) {
     let temp = 0;
 
