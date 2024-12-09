@@ -1,7 +1,7 @@
 let value = 0;
 
 import { entries } from "../models/schema";
-import { db } from "../utils/db";
+import { db } from "../db";
 import { desc } from "drizzle-orm";
 
 const cms = await db.query.entries.findMany({
