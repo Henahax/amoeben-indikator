@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import { entries } from "../models/schema.ts";
 import pkg from "pg";
+import pRetry from "p-retry";
 
 const { Pool } = pkg;
 
@@ -8,14 +8,18 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL || "postgres://postgres:postgres@localhost:5432/test_db",
 });
 
-const db = drizzle(pool, {
-  schema: {
-    entries,
-  },
-});
+const db = drizzle(pool);
 
-// Function to synchronize the schema
 async function initializeDb() {
+  await pRetry(
+    async () => {
+      await pool.query("SELECT 1"); // Simple query to check connectivity
+      console.log("Database is ready.");
+    },
+    { retries: 5, onFailedAttempt: (err) => console.log("Retrying DB connection...") }
+  );
+
+  // Create tables or run migrations here
   await db.execute(`
     CREATE TABLE IF NOT EXISTS entries (
       id SERIAL PRIMARY KEY,
