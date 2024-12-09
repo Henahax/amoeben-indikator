@@ -5,17 +5,27 @@ import HistoryElement from "../components/HistoryElement.astro";
 
 import scale from "../assets/scale.json";
 
-import entries from "../../data.json"
-entries.sort((a, b) => b.date.localeCompare(a.date));
-var entries2 = entries.slice(0, 5)
+import fs from "fs";
+import path from "path";
+
+async function loadEntries() {
+    const filePath = path.resolve("data.json"); // Adjust path based on the actual location of data.json
+    const rawData = await fs.promises.readFile(filePath, "utf-8");
+    const entries = JSON.parse(rawData);
+    entries.sort((a, b) => b.date.localeCompare(a.date));
+    return entries;
+}
+
+const entries = await loadEntries();
+const entries2 = entries.slice(0, 5);
 
 let currentValue = 0;
 currentValue = getValue(entries2);
 
-function getValue(entries: any) {
+function getValue(entries) {
     let temp = 0;
 
-    entries.forEach((entry: any) => {
+    entries.forEach((entry) => {
         temp += entry.value;
     });
 
