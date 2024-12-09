@@ -1,10 +1,11 @@
 // src/utils/db.ts
 import { drizzle } from "drizzle-orm/node-postgres";
-import { entries } from "../models/schema.ts";
 import { Pool } from "pg";
+import { entries } from "../models/schema.ts";
+
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: "postgres://postgres:postgres@localhost:5432/test_db",
 });
 
 const db = drizzle(pool, {
@@ -12,5 +13,5 @@ const db = drizzle(pool, {
     entries,
   },
 });
- 
-const result = await db.execute('select 1');
+
+export { db };
