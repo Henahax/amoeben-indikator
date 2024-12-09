@@ -17,8 +17,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data # Mount a named volume 'pgdata' to persist data in the specified directory inside the container
     environment: # Set environment variables for the PostgreSQL container. These variables configure the PostgreSQL database.
-
-
       - POSTGRES_DB=test_db # The name of the database to be created
       - POSTGRES_USER=postgres # The username for the PostgreSQL database
       - POSTGRES_PASSWORD=postgres # The password for the PostgreSQL database user
+volumes: # Define named volumes that can be used by services
+  pgdata: # Named volume 'pgdata' used to persist PostgreSQL data outside the container
