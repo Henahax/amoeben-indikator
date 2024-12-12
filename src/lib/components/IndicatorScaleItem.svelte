@@ -8,7 +8,7 @@
 </script>
 
 <li class="step {currentValue >= value ? 'step-primary' : ''}" data-content="">
-	<div class="flex items-center gap-2 text-2xl {isActive ? 'text-primary' : ''}">
+	<div class="flex items-center gap-2 text-2xl {isActive ? 'text-primary animate-pulse' : ''}">
 		{@render children?.()}
 	</div>
 </li>

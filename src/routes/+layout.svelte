@@ -8,5 +8,5 @@
 	<main class="grow">
 		{@render children()}
 	</main>
-	<footer>Footer</footer>
+	<footer class="flex justify-end text-xs"><a class="btn btn-ghost" href="https://github.com/Henahax/amoeben-indikator"><i class="fa-brands fa-github"></i>Sourcecode</a></footer>
 </app>
