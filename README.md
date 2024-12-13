@@ -18,3 +18,7 @@
 │  - Run npm run db:push to update your database schema                │
 │                                                                      │
 ├──────────────────────────────────────────────────────────────────────╯
+
+
+
+ docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres
