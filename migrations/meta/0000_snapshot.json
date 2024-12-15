@@ -1,5 +1,5 @@
 {
-  "id": "0fffbdc9-efd7-404a-a930-a44d6b8a84b7",
+  "id": "ef0c8b36-96a7-4904-8e4a-06e18a111d59",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,9 +14,21 @@
           "primaryKey": true,
           "notNull": true
         },
-        "userId": {
-          "name": "userId",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scale_id": {
+          "name": "scale_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -30,12 +42,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "entries_userId_users_id_fk": {
-          "name": "entries_userId_users_id_fk",
+        "entries_user_id_users_id_fk": {
+          "name": "entries_user_id_users_id_fk",
           "tableFrom": "entries",
           "tableTo": "users",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -43,12 +55,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "entries_userId_scaleValues_id_fk": {
-          "name": "entries_userId_scaleValues_id_fk",
+        "entries_scale_id_scale_id_fk": {
+          "name": "entries_scale_id_scale_id_fk",
           "tableFrom": "entries",
-          "tableTo": "scaleValues",
+          "tableTo": "scale",
           "columnsFrom": [
-            "userId"
+            "scale_id"
           ],
           "columnsTo": [
             "id"
@@ -63,8 +75,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.scaleValues": {
-      "name": "scaleValues",
+    "public.scale": {
+      "name": "scale",
       "schema": "",
       "columns": {
         "id": {
@@ -96,8 +108,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "scaleValues_value_unique": {
-          "name": "scaleValues_value_unique",
+        "scale_value_unique": {
+          "name": "scale_value_unique",
           "nullsNotDistinct": false,
           "columns": [
             "value"
