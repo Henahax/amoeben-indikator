@@ -7,12 +7,12 @@ import type { PageServerLoad } from './$types';
 export const load = (async () => {
 
     await db.insert(scale).values([
-        { name: "Amöbe", value: "0", icon: "fa-solid fa-bacterium" },
-        { name: "Baum", value: "0.2", icon: "fa-solid fa-tree" },
-        { name: "Wurm", value: "0.4", icon: "fa-solid fa-worm" },
-        { name: "Frosch", value: "0.6", icon: "fa-solid fa-frog" },
-        { name: "Hund", value: "0.8", icon: "fa-solid fa-dog" },
-        { name: "Mensch", value: "1", icon: "fa-solid fa-person" }
+        { id: 1, name: "Amöbe", value: "0", icon: "fa-solid fa-bacterium" },
+        { id: 2, name: "Baum", value: "0.2", icon: "fa-solid fa-tree" },
+        { id: 3, name: "Wurm", value: "0.4", icon: "fa-solid fa-worm" },
+        { id: 4, name: "Frosch", value: "0.6", icon: "fa-solid fa-frog" },
+        { id: 5, name: "Hund", value: "0.8", icon: "fa-solid fa-dog" },
+        { id: 6, name: "Mensch", value: "1", icon: "fa-solid fa-person" }
     ]).onConflictDoNothing();
 
     await db.insert(users).values([
@@ -22,7 +22,7 @@ export const load = (async () => {
 
     await db.insert(entries).values([
         { id: 1, user_id: 1, scale_id: 3, description: 'Kafee verschüttet', date: new Date('2024-12-09T09:55:02.235Z') },
-        { id: 2, user_id: 2, scale_id: 5, description: 'Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch', date: new Date('2024-12-10T16:22:40Z') }
+        { id: 2, user_id: 2, scale_id: 2, description: 'Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch', date: new Date('2024-12-10T16:22:40Z') }
     ]).onConflictDoNothing();
 
     // Fetch the latest 5 entries, sorted by date descending

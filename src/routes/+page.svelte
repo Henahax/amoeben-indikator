@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
+	import {scorer} from '$lib/state/score.svelte.js'
 
 	// The `data` prop is provided by the load function
 	let { data } = $props();
 	// Destructure the entries data
 	const { entries } = data;
 
-	let score = $state(0);
-
-	score = Number(getScore(data.entries));
+	scorer.score = Number(getScore(data.entries));
 
 	function getScore(stuff: any) {
 		if (stuff.length === 0) {
 			return 0;
 		}
 		let score: number = 0;
-		stuff.forEach((item) => {
+		stuff.forEach((item:any) => {
 			score += Number(item.scaleValue); // Ensure scaleValue is a number
 		});
 		return Number((score / stuff.length).toFixed(2)); // Round to 2 decimal places
@@ -24,7 +23,7 @@
 
 <div class="flex flex-col gap-8">
 	<h1 class="text-center text-4xl font-bold">Amöben-Indikator</h1>
-	<p class="mx-auto">Aktueller Wert: {score}</p>
+	<p class="mx-auto">Aktueller Wert: {scorer.score}</p>
 	<div class="flex flex-col gap-8">
 		<div class="gridContainer mx-auto grid w-fit gap-8">
 			{#each data.entries as entry}

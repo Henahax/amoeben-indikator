@@ -25,6 +25,7 @@
 				{#each data.users as user}
 					<Select.Item value={user.id}>{user.name}</Select.Item>
 				{/each}
+				<Select.Item disabled value={0}>weitere auf Anfrage</Select.Item>
 			</Select.Content>
 		</Select.Root>
 	</div>
@@ -38,7 +39,7 @@
 				{#each data.scale as scaleItem}
 					<Select.Item value={scaleItem.id}>
 						<div class="flex gap-2 items-center">
-							<i class="{scaleItem.icon} w-4"></i>
+							<i class="{scaleItem.icon} w-4 text-center"></i>
 							{scaleItem.name}
 						</div>
 					</Select.Item>
