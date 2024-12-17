@@ -41,7 +41,18 @@ export const load = (async () => {
         .orderBy(desc(entries.date)) // Sort by date descending
         .limit(5); // Limit to 5 entries
 
+
+    const myScale = await db.select({
+        id: scale.id,
+        name: scale.name,
+        value: scale.value,
+        icon: scale.icon
+    })
+        .from(scale)
+        .orderBy(scale.value)
+
     return {
-        entries: latestEntries
+        entries: latestEntries,
+        scale: myScale
     };
 }) satisfies PageServerLoad;
