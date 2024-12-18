@@ -16,8 +16,8 @@ export const load = (async () => {
     ]).onConflictDoNothing();
 
     await db.insert(users).values([
-        { id: 1, name: "Henahax", password: "password123" },
-        { id: 2, name: "Waetsch", password: "password456" }
+        { id: 1, name: "Henahax", password: "$2y$10$Dw7JvT6JUmQ/.k6v2unVr.KxxRkJhfCYqmJQlITdaj4flM64wsGCa" },
+        { id: 2, name: "Waetsch", password: "$2y$10$kxyK1oqYYStzuBijM0.0f.lVgSEUjxf46JqxoE79quxTUmzD3MHj6" }
     ]).onConflictDoNothing();
 
     await db.insert(entries).values([

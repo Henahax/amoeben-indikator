@@ -25,7 +25,7 @@ export type SelectUser = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
 export type SelectScale = typeof entries.$inferSelect;
-export type InsertScalee = typeof entries.$inferInsert;
+export type InsertScale = typeof entries.$inferInsert;
 
 export type SelectEntry = typeof entries.$inferSelect;
 export type InsertEntry = typeof entries.$inferInsert;

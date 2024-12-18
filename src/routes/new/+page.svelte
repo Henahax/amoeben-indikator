@@ -5,11 +5,61 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Button } from '$lib/components/ui/button';
 
-	// The `data` prop is provided by the load function
-	export let data;
+	import bcrypt from 'bcryptjs';
 
-	// Destructure the entries data
+	export let data;
 	const { users, scale } = data;
+
+	let selectedUser = 0;
+	let selectedScale = 0;
+	let description = '';
+	let password = '';
+
+	async function hashPassword(password: string) {
+		return await bcrypt.hash(password, 10);
+	}
+
+	async function validatePassword(userid: number, password: string): Promise<boolean> {
+		let userHash = '';
+
+		users.forEach((user) => {
+			if (user.id === userid) {
+				userHash = user.password;
+			}
+		});
+
+		if (userHash.length === 0) {
+			return false;
+		}
+
+		const passwordHash = await hashPassword(password);
+
+		return passwordHash === userHash;
+	}
+
+	async function send(userid: number, password: string) {
+		try {
+			const isValid = await validatePassword(userid, password);
+
+			if (!isValid) {
+				alert('Nö');
+				return;
+			}
+
+			const entry = {
+				user_id: selectedUser,
+				scale_id: selectedScale,
+				description
+			};
+
+			//await createEntry(entry);
+
+			alert('Entry created successfully!');
+		} catch (error) {
+			console.error('Error during send:', error);
+			alert('Something went wrong. Please try again later.');
+		}
+	}
 </script>
 
 <h2 class="text-center text-2xl">Neuer Eintrag</h2>
@@ -36,9 +86,9 @@
 				<Select.Value placeholder="Bewertung auswählen" />
 			</Select.Trigger>
 			<Select.Content>
-				{#each data.scale as scaleItem}
+				{#each scale as scaleItem}
 					<Select.Item value={scaleItem.id}>
-						<div class="flex gap-2 items-center">
+						<div class="flex items-center gap-2">
 							<i class="{scaleItem.icon} w-4 text-center"></i>
 							{scaleItem.name}
 						</div>
@@ -49,15 +99,15 @@
 	</div>
 	<div>
 		<Label>Beschreibung</Label>
-		<Textarea placeholder="Beschreibung eintragen" class="h-32"></Textarea>
+		<Textarea placeholder="Beschreibung eintragen" class="h-32" bind:value={description}></Textarea>
 	</div>
 	<div>
 		<Label>Passwort</Label>
-		<Input type="password" placeholder="Passwort eingeben"></Input>
+		<Input type="password" placeholder="Passwort eingeben" bind:value={password}></Input>
 	</div>
 	<div class="buttonrow">
 		<Button variant="outline" href="../">Zurück</Button>
-		<Button class="w-full" type="submit">Senden</Button>
+		<Button class="w-full" type="submit" onclick={() => send(1, 'test')}>Senden</Button>
 	</div>
 </form>
 
