@@ -16,7 +16,7 @@
 			<i class="fa-solid fa-moon block dark:hidden"></i>
 		</Button>
 	</header>
-	<main class="mx-auto grow content-center p-4 max-w-screen-2xl w-full">
+	<main class="mx-auto grow content-center p-8 max-w-screen-2xl w-full">
 		{@render children()}
 	</main>
 	<footer class="flex justify-end text-xs">

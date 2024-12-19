@@ -21,7 +21,7 @@ export const load = (async () => {
     ]).onConflictDoNothing();
 
     await db.insert(entries).values([
-        { id: 1, user_id: 1, scale_id: 3, description: 'Kafee verschüttet', date: new Date('2024-12-09T09:55:02.235Z') },
+        { id: 1, user_id: 1, scale_id: 3, description: 'Kaffee verschüttet', date: new Date('2024-12-09T09:55:02.235Z') },
         { id: 2, user_id: 2, scale_id: 2, description: 'Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch', date: new Date('2024-12-10T16:22:40Z') }
     ]).onConflictDoNothing();
 

@@ -4,7 +4,9 @@ import type {InsertEntry} from '$lib/db/schema';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import { eq, fir } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
+import bcrypt from 'bcryptjs';
+
 
 export const load = (async () => {
 
@@ -34,7 +36,7 @@ export const load = (async () => {
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-    create: async ({ request }) => {
+    default: async ({ request }) => {
         const data = await request.formData();
         const userId = data.get('user_id');
         const scaleId = data.get('scale_id');
@@ -56,7 +58,7 @@ export const actions: Actions = {
         let test = user[0];
        
 
-        if(!test ||  test.password !== db.hash(password)){
+        if(!test ||  hashPassword(test.password) !== hashPassword(password)){
             return fail(400, { userId, incorrect: true });
         }
 
@@ -65,8 +67,20 @@ export const actions: Actions = {
             scale_id: scaleId,
             description: description
         }
-        await db.insert(entries).values(insertEntry);
+        
+        try {
+            await db.insert(entries).values(insertEntry);
+        } catch (error) {
+            if (error) {
+                return fail(400, { error: 'Bad Request' });
+            }
+            return fail(500, { error: 'Internal Server Error' });
+        }
 
         return {success: true};
     },
 } satisfies Actions;
+
+async function hashPassword(password: string = '') {
+    return await bcrypt.hash(password, 10);
+}

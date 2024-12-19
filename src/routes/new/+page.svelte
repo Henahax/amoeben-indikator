@@ -33,38 +33,18 @@
 		}
 
 		const passwordHash = await hashPassword(password);
+		console.log(password);
+		console.log(userHash);
+		console.log(passwordHash);
 
 		return passwordHash === userHash;
 	}
 
-	async function send(userid: number, password: string) {
-		try {
-			const isValid = await validatePassword(userid, password);
-
-			if (!isValid) {
-				alert('Nö');
-				return;
-			}
-
-			const entry = {
-				user_id: selectedUser,
-				scale_id: selectedScale,
-				description
-			};
-
-			//await createEntry(entry);
-
-			alert('Entry created successfully!');
-		} catch (error) {
-			console.error('Error during send:', error);
-			alert('Something went wrong. Please try again later.');
-		}
-	}
 </script>
 
 <h2 class="text-center text-2xl">Neuer Eintrag</h2>
 
-<form class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4">
+<form class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4" method="POST">
 	<div>
 		<Label>Name</Label>
 		<Select.Root>
@@ -107,7 +87,7 @@
 	</div>
 	<div class="buttonrow">
 		<Button variant="outline" href="../">Zurück</Button>
-		<Button class="w-full" type="submit" onclick={() => send(1, 'test')}>Senden</Button>
+		<Button class="w-full" type="submit">Senden</Button>
 	</div>
 </form>
 
