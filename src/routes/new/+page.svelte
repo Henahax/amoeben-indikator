@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as Form from "$lib/components/ui/form";
 	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
 	import { Input } from '$lib/components/ui/input';
@@ -9,11 +10,6 @@
 
 	export let data;
 	const { users, scale } = data;
-
-	let selectedUser = 0;
-	let selectedScale = 0;
-	let description = '';
-	let password = '';
 
 	async function hashPassword(password: string) {
 		return await bcrypt.hash(password, 10);
@@ -40,14 +36,31 @@
 		return passwordHash === userHash;
 	}
 
+	const { form: formData, enhance } = form;
 </script>
 
 <h2 class="text-center text-2xl">Neuer Eintrag</h2>
 
-<form class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4" method="POST">
+<form class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4" method="POST" action="/new">
+
+	<Form.Field {form} name="name">
+		<Form.Control let:attrs>
+		  <Form.Label>Name</Form.Label>
+		  <Input {...attrs} bind:value={$formData.user_id} />
+		</Form.Control>
+		<Form.Description />
+		<Form.FieldErrors />
+	  </Form.Field>
+
+
+
+	<div>---------</div>
+
 	<div>
+		<!-- TODO: Bind value -->
+
 		<Label>Name</Label>
-		<Select.Root>
+		<Select.Root name="user_id">
 			<Select.Trigger>
 				<Select.Value placeholder="Name auswählen" />
 			</Select.Trigger>
@@ -61,7 +74,7 @@
 	</div>
 	<div>
 		<Label>Bewertung</Label>
-		<Select.Root>
+		<Select.Root name="scale_id">
 			<Select.Trigger>
 				<Select.Value placeholder="Bewertung auswählen" />
 			</Select.Trigger>
@@ -79,11 +92,11 @@
 	</div>
 	<div>
 		<Label>Beschreibung</Label>
-		<Textarea placeholder="Beschreibung eintragen" class="h-32" bind:value={description}></Textarea>
+		<Textarea placeholder="Beschreibung eintragen" class="h-32" name="description"></Textarea>
 	</div>
 	<div>
 		<Label>Passwort</Label>
-		<Input type="password" placeholder="Passwort eingeben" bind:value={password}></Input>
+		<Input type="password" placeholder="Passwort eingeben" name="password"></Input>
 	</div>
 	<div class="buttonrow">
 		<Button variant="outline" href="../">Zurück</Button>

@@ -37,13 +37,19 @@ export const load = (async () => {
 
 export const actions: Actions = {
     default: async ({ request }) => {
+        console.log('Request received:', request);
+
         const data = await request.formData();
+        console.log('Form data:', data);
+
         const userId = data.get('user_id');
         const scaleId = data.get('scale_id');
         const description = data.get('description');
         const password = data.get('password');
 
-        if(!description){
+        console.log('Parsed data:', { userId, scaleId, description, password });
+
+        if (!description) {
             return fail(400, { description, incorrect: true });
         }
 
@@ -56,18 +62,17 @@ export const actions: Actions = {
         .where(eq(users.id, Number(userId)));
 
         let test = user[0];
-       
 
-        if(!test ||  hashPassword(test.password) !== hashPassword(password)){
+        if (!test || hashPassword(test.password) !== hashPassword(password)) {
             return fail(400, { userId, incorrect: true });
         }
 
-        const insertEntry:InsertEntry = {
+        const insertEntry: InsertEntry = {
             user_id: userId,
             scale_id: scaleId,
             description: description
-        }
-        
+        };
+
         try {
             await db.insert(entries).values(insertEntry);
         } catch (error) {
@@ -77,7 +82,7 @@ export const actions: Actions = {
             return fail(500, { error: 'Internal Server Error' });
         }
 
-        return {success: true};
+        return { success: true };
     },
 } satisfies Actions;
 
