@@ -8,7 +8,8 @@
 
 	import bcrypt from 'bcryptjs';
 
-	export let data;
+	let {data} = $props();
+
 	const { users, scale } = data;
 
 	async function hashPassword(password: string) {
@@ -36,26 +37,11 @@
 		return passwordHash === userHash;
 	}
 
-	const { form: formData, enhance } = form;
 </script>
 
 <h2 class="text-center text-2xl">Neuer Eintrag</h2>
 
 <form class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4" method="POST" action="/new">
-
-	<Form.Field {form} name="name">
-		<Form.Control let:attrs>
-		  <Form.Label>Name</Form.Label>
-		  <Input {...attrs} bind:value={$formData.user_id} />
-		</Form.Control>
-		<Form.Description />
-		<Form.FieldErrors />
-	  </Form.Field>
-
-
-
-	<div>---------</div>
-
 	<div>
 		<!-- TODO: Bind value -->
 
