@@ -37,6 +37,8 @@
 		return passwordHash === userHash;
 	}
 
+	let selectedUserId:number = $state(0);
+    let selectedScaleId:number = $state(0);
 </script>
 
 <h2 class="text-center text-2xl">Neuer Eintrag</h2>
@@ -46,7 +48,9 @@
 		<!-- TODO: Bind value -->
 
 		<Label>Name</Label>
-		<Select.Root name="user_id">
+		<Select.Root name="user_id" onSelectedChange={(v) => {
+			v && (selectedUserId = v.value);
+		  }}>
 			<Select.Trigger>
 				<Select.Value placeholder="Name auswählen" />
 			</Select.Trigger>
@@ -57,10 +61,13 @@
 				<Select.Item disabled value={0}>weitere auf Anfrage</Select.Item>
 			</Select.Content>
 		</Select.Root>
+		<input type="hidden" name="user_id" value={selectedUserId} />
 	</div>
 	<div>
 		<Label>Bewertung</Label>
-		<Select.Root name="scale_id">
+		<Select.Root name="scale_id" onSelectedChange={(v) => {
+			v && (selectedScaleId = v.value);
+		  }}>
 			<Select.Trigger>
 				<Select.Value placeholder="Bewertung auswählen" />
 			</Select.Trigger>
@@ -75,6 +82,7 @@
 				{/each}
 			</Select.Content>
 		</Select.Root>
+		<input type="hidden" name="scale_id" value={selectedScaleId} />
 	</div>
 	<div>
 		<Label>Beschreibung</Label>

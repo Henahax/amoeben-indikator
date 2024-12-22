@@ -42,6 +42,11 @@ export const actions: Actions = {
         const data = await request.formData();
         console.log('Form data:', data);
 
+        // Log all keys in the form data
+        for (let key of data.keys()) {
+            console.log(`Form data key: ${key}, value: ${data.get(key)}`);
+        }
+
         const userId = data.get('user_id');
         const scaleId = data.get('scale_id');
         const description = data.get('description');
