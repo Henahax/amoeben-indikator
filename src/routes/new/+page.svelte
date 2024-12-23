@@ -1,56 +1,54 @@
 <script lang="ts">
-	import * as Form from "$lib/components/ui/form";
+	import { goto } from '$app/navigation';
 	import { Label } from '$lib/components/ui/label';
-	import * as Select from '$lib/components/ui/select';
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Button } from '$lib/components/ui/button';
+	import * as Select from '$lib/components/ui/select';
 
-	import bcrypt from 'bcryptjs';
-
-	let {data} = $props();
+	let { data } = $props();
+	let selectedUserId: number = $state(0);
+	let selectedScaleId: number = $state(0);
 
 	const { users, scale } = data;
 
-	async function hashPassword(password: string) {
-		return await bcrypt.hash(password, 10);
-	}
+	async function handleSubmit(event: Event) {
+		event.preventDefault();
+		const form = event.target as HTMLFormElement;
+		const formData = new FormData(form);
 
-	async function validatePassword(userid: number, password: string): Promise<boolean> {
-		let userHash = '';
-
-		users.forEach((user) => {
-			if (user.id === userid) {
-				userHash = user.password;
-			}
+		const response = await fetch('/new', {
+			method: 'POST',
+			body: formData
 		});
 
-		if (userHash.length === 0) {
-			return false;
+		if (response.ok) {
+			const result = await response.json();
+
+			if (result.type === 'success') {
+				goto('/');
+				return;
+			}
 		}
-
-		const passwordHash = await hashPassword(password);
-		console.log(password);
-		console.log(userHash);
-		console.log(passwordHash);
-
-		return passwordHash === userHash;
+		console.error('Failed to submit form');
 	}
-
-	let selectedUserId:number = $state(0);
-    let selectedScaleId:number = $state(0);
 </script>
 
 <h2 class="text-center text-2xl">Neuer Eintrag</h2>
 
-<form class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4" method="POST" action="/new">
+<form
+	class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4"
+	method="POST"
+	onsubmit={handleSubmit}
+>
 	<div>
-		<!-- TODO: Bind value -->
-
 		<Label>Name</Label>
-		<Select.Root name="user_id" onSelectedChange={(v) => {
-			v && (selectedUserId = v.value);
-		  }}>
+		<Select.Root
+			name="user_id"
+			onSelectedChange={(v) => {
+				v && (selectedUserId = v.value);
+			}}
+		>
 			<Select.Trigger>
 				<Select.Value placeholder="Name auswählen" />
 			</Select.Trigger>
@@ -65,9 +63,12 @@
 	</div>
 	<div>
 		<Label>Bewertung</Label>
-		<Select.Root name="scale_id" onSelectedChange={(v) => {
-			v && (selectedScaleId = v.value);
-		  }}>
+		<Select.Root
+			name="scale_id"
+			onSelectedChange={(v) => {
+				v && (selectedScaleId = v.value);
+			}}
+		>
 			<Select.Trigger>
 				<Select.Value placeholder="Bewertung auswählen" />
 			</Select.Trigger>

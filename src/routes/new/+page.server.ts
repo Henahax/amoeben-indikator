@@ -1,12 +1,11 @@
 import { db } from '$lib/db/db.server';
 import { scale, users, entries } from '$lib/db/schema';
-import type {InsertEntry} from '$lib/db/schema';
-import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
-
+import type { InsertEntry } from '$lib/db/schema';
+import type { PageServerLoad } from './$types';
+import type { Actions } from './$types';
 
 export const load = (async () => {
 
@@ -37,22 +36,12 @@ export const load = (async () => {
 
 export const actions: Actions = {
     default: async ({ request }) => {
-        console.log('Request received:', request);
-
         const data = await request.formData();
-        console.log('Form data:', data);
-
-        // Log all keys in the form data
-        for (let key of data.keys()) {
-            console.log(`Form data key: ${key}, value: ${data.get(key)}`);
-        }
 
         const userId = data.get('user_id');
         const scaleId = data.get('scale_id');
         const description = data.get('description');
         const password = data.get('password');
-
-        console.log('Parsed data:', { userId, scaleId, description, password });
 
         if (!description) {
             return fail(400, { description, incorrect: true });
@@ -63,12 +52,12 @@ export const actions: Actions = {
             name: users.name,
             password: users.password,
         })
-        .from(users)
-        .where(eq(users.id, Number(userId)));
+            .from(users)
+            .where(eq(users.id, Number(userId)));
 
         let test = user[0];
 
-        if (!test || hashPassword(test.password) !== hashPassword(password)) {
+        if (!test || !bcrypt.compareSync(password, test.password)) {
             return fail(400, { userId, incorrect: true });
         }
 
@@ -80,17 +69,12 @@ export const actions: Actions = {
 
         try {
             await db.insert(entries).values(insertEntry);
+            return { success: true };
         } catch (error) {
             if (error) {
                 return fail(400, { error: 'Bad Request' });
             }
-            return fail(500, { error: 'Internal Server Error' });
         }
-
-        return { success: true };
+        return fail(500, { error: 'Internal Server Error' });
     },
 } satisfies Actions;
-
-async function hashPassword(password: string = '') {
-    return await bcrypt.hash(password, 10);
-}
