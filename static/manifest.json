@@ -1,7 +1,7 @@
 {
-    "id": "todo",
-    "name": "todo",
-    "short_name": "todo",
+    "id": "Amöben Indikator",
+    "name": "Amöben Indikator",
+    "short_name": "Amöbe",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
@@ -10,8 +10,8 @@
     "background_color": "#000000",
     "icons": [
         {
-            "src": "/icon.png",
-            "sizes": "192x192",
+            "src": "/amoeba.png",
+            "sizes": "any",
             "type": "image/png"
         }
     ]
