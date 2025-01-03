@@ -46,7 +46,7 @@
 		<Select.Root
 			name="user_id"
 			onSelectedChange={(v) => {
-				v && (selectedUserId = v.value);
+				v && (selectedUserId = v.value as number);
 			}}
 		>
 			<Select.Trigger>
@@ -66,7 +66,7 @@
 		<Select.Root
 			name="scale_id"
 			onSelectedChange={(v) => {
-				v && (selectedScaleId = v.value);
+				v && (selectedScaleId = v.value as number);
 			}}
 		>
 			<Select.Trigger>
