@@ -2,6 +2,8 @@ version: '3.9'
 services:
   app:
     image: henahax/amoeben-indikator:latest
+    container_name: amoeben-indikator
+    hostname: amoeben-indikator
     restart: always
     environment:
       - HOST=0.0.0.0
@@ -12,11 +14,13 @@ services:
     depends_on:
       - db
     entrypoint: ["/app/entrypoint.sh"]
+    working_dir: /app
   db:
-    image: postgres
+    image: postgres:latest
+    container_name: amoeben-indikator-db
+    hostname: amoeben-indikator-db
     restart: always
     shm_size: 128mb
-
     environment:
       - POSTGRES_DB=test
       - POSTGRES_USER=postgres
@@ -25,6 +29,8 @@ services:
       - 5432:5432
   adminer:
     image: adminer
+    container_name: amoeben-indikator-admin
+    hostname: amoeben-indikator-admin
     restart: always
     ports:
       - 8084:8080
