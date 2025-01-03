@@ -1,5 +1,4 @@
 version: '3.9'
-
 services:
   app:
     image: henahax/amoeben-indikator:latest
@@ -12,7 +11,7 @@ services:
       - 4321:4321
     depends_on:
       - db
-    entrypoint: ["./entrypoint.sh"]
+    entrypoint: [ "/app/entrypoint.sh" ]
   db:
     image: postgres
     restart: always

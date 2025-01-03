@@ -11,12 +11,12 @@ FROM node:lts AS runtime
 WORKDIR /app
 
 COPY --from=builder /app ./
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 RUN npm ci --only=production
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
 EXPOSE 4321
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["node", "./dist/server/entry.mjs"]
