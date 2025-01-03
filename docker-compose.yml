@@ -1,12 +1,36 @@
-version: '2.1'
+version: '3.9'
+
 services:
-  nginx:
+  app:
     image: henahax/amoeben-indikator:latest
-    container_name: amoeben-indikator
+    restart: always
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Berlin
+      - HOST=0.0.0.0
+      - PORT=4321
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/test
     ports:
-      - 8083:4321
-    restart: unless-stopped
+      - 4321:4321
+    depends_on:
+      - db
+  db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
