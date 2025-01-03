@@ -1,6 +1,6 @@
 {
 	"name": "amoeben-indikator",
-	"version": "0.0.34",
+	"version": "0.1.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
