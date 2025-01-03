@@ -8,21 +8,15 @@ services:
       - PORT=4321
       - DATABASE_URL=postgres://postgres:postgres@db:5432/test
     ports:
-      - 4321:4321
+      - 8083:4321
     depends_on:
       - db
-    entrypoint: [ "/app/entrypoint.sh" ]
+    entrypoint: ["/app/entrypoint.sh"]
   db:
     image: postgres
     restart: always
-    # set shared memory limit when using docker-compose
     shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
-    #volumes:
-    #  - type: tmpfs
-    #    target: /dev/shm
-    #    tmpfs:
-    #      size: 134217728 # 128*2^20 bytes = 128Mb
+
     environment:
       - POSTGRES_DB=test
       - POSTGRES_USER=postgres
@@ -33,4 +27,4 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8084:8080
