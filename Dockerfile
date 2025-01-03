@@ -15,8 +15,9 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 RUN npm ci --only=production
 
-# Verify the entrypoint script exists
+# Verify the entrypoint script exists and has the correct permissions
 RUN ls -l /app/entrypoint.sh
+RUN cat /app/entrypoint.sh
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
