@@ -65,7 +65,7 @@
 	</section>
 
 	<section class="flex flex-col gap-8">
-		<ul class="divide-y divide-neutral-500 divide-opacity-25">
+		<ul class="divide-y divide-neutral-500 divide-opacity-25 w-fit mx-auto">
 			{#each data.entries as entry}
 				<li class="grid grid-cols-[auto_auto_1fr] gap-x-8 gap-y-8 py-4">
 					<div class="grid-subgrid grid grid-cols-1 content-center gap-x-8 gap-y-2 sm:grid-cols-2 col-span-2 sm:col-span-1">

@@ -21,7 +21,6 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "${{ secrets.EMAIL }}"
 
-
       - name: Dependecies
         run: npm install
 
@@ -44,8 +43,14 @@ jobs:
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
+      - name: Generate Drizzle schema
+        run: npx drizzle-kit generate
+
+      - name: Apply Drizzle migrations
+        run: npx drizzle-kit migrate
+
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag henahax/amoeben-indikator:latest
+        run: docker build . --file Dockerfile --tag henahax/amoeben-indikator:${{ steps.version.outputs.tag }}
 
       - name: Push to Docker Hub
-        run: docker push henahax/amoeben-indikator:latest
+        run: docker push henahax/amoeben-indikator:${{ steps.version.outputs.tag }}
