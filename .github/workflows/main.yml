@@ -43,12 +43,6 @@ jobs:
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-      - name: Generate Drizzle schema
-        run: npx drizzle-kit generate
-
-      - name: Apply Drizzle migrations
-        run: npx drizzle-kit migrate
-
       - name: Build Docker image
         run: docker build . --file Dockerfile --tag henahax/amoeben-indikator:${{ steps.version.outputs.tag }}
 
