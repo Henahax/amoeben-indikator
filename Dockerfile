@@ -10,6 +10,9 @@ RUN npm run build
 FROM node:lts AS runtime
 WORKDIR /app
 
+# Install PostgreSQL client utilities
+RUN apt-get update && apt-get install -y postgresql-client
+
 COPY --from=builder /app ./
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
@@ -18,5 +21,5 @@ RUN npm ci --only=production
 ENV HOST=0.0.0.0
 ENV PORT=4321
 EXPOSE 4321
-ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["node", "./dist/server/entry.mjs"]
