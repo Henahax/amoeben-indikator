@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y postgresql-client
 
 COPY --from=builder /app ./
 COPY entrypoint.sh /app/entrypoint.sh
+COPY drizzle.config.ts /app/drizzle.config.ts
 RUN chmod +x /app/entrypoint.sh
 RUN npm ci --only=production
 
