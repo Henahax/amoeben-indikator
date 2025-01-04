@@ -34,6 +34,11 @@ jobs:
         id: version
         run: echo ::set-output name=tag::$(echo $(node -p -e "require('./package.json').version"))
 
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "Committing changes before version bump"
+
       - name: Increase version
         run: npm version patch
 
