@@ -18,5 +18,5 @@ RUN npm ci --only=production
 ENV HOST=0.0.0.0
 ENV PORT=4321
 EXPOSE 4321
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
 CMD ["node", "./dist/server/entry.mjs"]
