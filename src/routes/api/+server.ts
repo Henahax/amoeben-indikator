@@ -1,5 +1,6 @@
 import { json } from "@sveltejs/kit";
+import { store } from '$lib/store.svelte.js';
 
 export function GET(){
-    return json(0);
+    return json(store.score);
 }

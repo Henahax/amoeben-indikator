@@ -1,16 +1,13 @@
 <script lang="ts">
 	import type { entry, user, scale } from '$lib/types';
 
-	import { Button } from '$lib/components/ui/button/index.js';
-
-	import { Progress } from '$lib/components/ui/progress';
-
-	import jsonEntries from '$lib/entries.json';
-
-	import { store } from '$lib/store.svelte.js';
-
 	import { Tween } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
+
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Progress } from '$lib/components/ui/progress';
+
+	import { store } from '$lib/store.svelte.js';
 
 	let progress = $state(
 		new Tween(0, {
@@ -21,7 +18,6 @@
 	);
 
 	$effect(() => {
-		store.entries = jsonEntries as entry[];
 		progress.target = store.score;
 	});
 </script>
