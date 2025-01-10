@@ -35,6 +35,6 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 </header>
-<main class="mx-auto flex max-w-screen-lg flex-col gap-8 p-4">
+<main class="mx-auto flex max-w-screen-lg flex-col gap-16 p-4">
 	{@render children()}
 </main>

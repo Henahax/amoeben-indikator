@@ -32,7 +32,7 @@
 		<ul class="flex flex-row justify-between">
 			{#each store.scales as scale}
 				<li
-					class="flex flex-col items-center justify-end {store.highestScale === scale.id
+					class="flex flex-col items-center justify-end max-sm:px-4 {store.highestScale === scale.id
 						? 'text-primary font-bold text-xl'
 						: 'text-neutral-500'}"
 					title="≥{scale.value}"
