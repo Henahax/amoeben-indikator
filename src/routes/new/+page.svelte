@@ -14,19 +14,16 @@
 
 	async function handleSubmit(event: Event) {
 
-		console.log('test')
-
 		event.preventDefault();
 		const form = event.target as HTMLFormElement;
 		const formData = new FormData(form);
-
-
-		console.log(formData)
 
 		const response = await fetch('/new', {
 			method: 'POST',
 			body: formData
 		});
+
+		console.log(response)
 
 		if (response.ok) {
 			const result = await response.json();
@@ -35,8 +32,17 @@
 				goto('/');
 				return;
 			}
+
+			if(result.type === 'error') {
+				console.log("jolo");
+				console.error(result);
+				return;
+			}
 		}
 		console.error('Failed to submit form');
+
+
+		console.error(response);
 	}
 </script>
 

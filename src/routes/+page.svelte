@@ -29,13 +29,15 @@
 			{#each store.scales as scale}
 				<li
 					class="flex flex-col items-center justify-end max-sm:px-4 {store.highestScale === scale.id
-						? 'text-primary font-bold text-xl'
+						? 'text-primary text-xl font-bold'
 						: 'text-neutral-500'}"
 					title="≥{scale.value}"
 				>
-					<i class="{scale.icon} {store.highestScale === scale.id
-						? 'animate-pulse text-3xl'
-						: 'text-xl'}"></i>
+					<i
+						class="{scale.icon} {store.highestScale === scale.id
+							? 'animate-pulse text-3xl'
+							: 'text-xl'}"
+					></i>
 					<div class="hidden sm:block">
 						{scale.name}
 					</div>
