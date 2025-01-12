@@ -13,9 +13,15 @@
 
 
 	async function handleSubmit(event: Event) {
+
+		console.log('test')
+
 		event.preventDefault();
 		const form = event.target as HTMLFormElement;
 		const formData = new FormData(form);
+
+
+		console.log(formData)
 
 		const response = await fetch('/new', {
 			method: 'POST',
