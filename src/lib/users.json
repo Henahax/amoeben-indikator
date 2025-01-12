@@ -2,11 +2,11 @@
     {
         "id": 1,
         "name": "Henahax",
-        "password" : "$2y$10$Dw7JvT6JUmQ/.k6v2unVr.KxxRkJhfCYqmJQlITdaj4flM64wsGCa"
+        "password" : "$2a$12$5.cuuld5m3frtT1NnrDQnuccg2r2z/P/Ias2LaiaAG1zONXPxpphC"
     },
     {
         "id": 2,
         "name": "Waetsch",
-        "password" : "$2y$10$kxyK1oqYYStzuBijM0.0f.lVgSEUjxf46JqxoE79quxTUmzD3MHj6"
+        "password" : "$2a$12$1lq0aFtYXbgOr4yR0W47GOuAnEanMGFc03R0x8vUu26EmyzjBl5hu"
     }
 ]

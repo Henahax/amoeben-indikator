@@ -1,58 +1,23 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import type { PageData, ActionData } from './$types';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Button } from '$lib/components/ui/button';
 	import * as Select from '$lib/components/ui/select';
 
-    import { store } from '$lib/store.svelte.js';
+	import { store } from '$lib/store.svelte.js';
 
-	let selectedUserId: number = $state(0);
-	let selectedScaleId: number = $state(0);
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 
+	let selectedUserId: number = $state(form?.userId || 0);
+	let selectedScaleId: number = $state(form?.scaleId || 0);
+	let description: string = $state(form?.description || '');
 
-	async function handleSubmit(event: Event) {
-
-		event.preventDefault();
-		const form = event.target as HTMLFormElement;
-		const formData = new FormData(form);
-
-		const response = await fetch('/new', {
-			method: 'POST',
-			body: formData
-		});
-
-		console.log(response)
-
-		if (response.ok) {
-			const result = await response.json();
-
-			if (result.type === 'success') {
-				goto('/');
-				return;
-			}
-
-			if(result.type === 'error') {
-				console.log("jolo");
-				console.error(result);
-				return;
-			}
-		}
-		console.error('Failed to submit form');
-
-
-		console.error(response);
-	}
 </script>
 
-<h2 class="text-center text-2xl">Neuer Eintrag</h2>
-
-<form
-	class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4"
-	method="POST"
-	onsubmit={handleSubmit}
->
+<form class="mx-auto flex w-full max-w-screen-sm flex-col gap-4 p-4" method="POST">
+	<h2 class="text-center text-2xl">Neuer Eintrag</h2>
 	<div>
 		<Label>Name</Label>
 		<Select.Root
@@ -99,12 +64,24 @@
 	</div>
 	<div>
 		<Label>Beschreibung</Label>
-		<Textarea placeholder="Beschreibung eintragen" class="h-32" name="description"></Textarea>
+		<Textarea placeholder="Beschreibung eintragen" class="h-32" name="description" bind:value={description}></Textarea>
 	</div>
 	<div>
 		<Label>Passwort</Label>
 		<Input type="password" placeholder="Passwort eingeben" name="password"></Input>
 	</div>
+	{#if form?.userInvalid}
+		<p class="rounded border border-red-500 p-2 px-4 text-red-500">Bitte Name auswählen</p>
+	{/if}
+	{#if form?.scaleInvalid}
+		<p class="rounded border border-red-500 p-2 px-4 text-red-500">Bitte Bewertung auswählen</p>
+	{/if}
+	{#if form?.descriptionInvalid}
+		<p class="rounded border border-red-500 p-2 px-4 text-red-500">Bitte Beschreibung angeben</p>
+	{/if}
+	{#if form?.passwordInvalid}
+		<p class="rounded border border-red-500 p-2 px-4 text-red-500">Falsches Passwort</p>
+	{/if}
 	<div class="buttonrow">
 		<Button variant="outline" href="../">Zurück</Button>
 		<Button class="w-full" type="submit">Senden</Button>
@@ -112,12 +89,6 @@
 </form>
 
 <style>
-	form div {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
 	.buttonrow {
 		display: flex;
 		flex-direction: row;
