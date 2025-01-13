@@ -3,7 +3,7 @@ export type entry = {
     user_id: number;
     scale_id: number;
     date: string;
-    message: string;
+    description: string;
 }
 
 export type scale = {

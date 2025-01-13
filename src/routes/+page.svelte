@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { entry, user, scale } from '$lib/types';
+	import type { user, scale } from '$lib/types';
 
 	import { Tween } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
@@ -80,9 +80,8 @@
 							{store.scales.find((scale: scale) => entry.scale_id === scale.id)?.name}
 						</div>
 					</div>
-
 					<div class="flex items-center text-sm">
-						{entry.message}
+						{entry.description}
 					</div>
 				</li>
 			{/each}

@@ -2,6 +2,8 @@ import type { Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { store } from '$lib/store.svelte.js';
 import bcrypt from 'bcrypt'
+import entries from '$lib/entries.json';
+import * as fs from "fs";
 
 export const actions = {
 	default: async ({ request }) => {
@@ -34,6 +36,10 @@ export const actions = {
 		if (!user || !(await bcrypt.compareSync(password, user.password))) {
 			return fail(400, {password, passwordInvalid: true, userId, scaleId, description});
 		}
+
+		let entry = { "user_id" : userId, "scale_id" : scaleId, "date" : new Date().toISOString(), "description" : description };
+		entries.push(entry);
+		fs.writeFileSync("entries.json", JSON.stringify(entries));
 
 		redirect(303, "/");
 	}
