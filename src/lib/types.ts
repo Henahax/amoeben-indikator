@@ -1,5 +1,4 @@
 export type entry = {
-    id: number;
     user_id: number;
     scale_id: number;
     date: string;

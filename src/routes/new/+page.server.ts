@@ -4,6 +4,7 @@ import { store } from '$lib/store.svelte.js';
 import bcrypt from 'bcrypt'
 import entries from '$lib/entries.json';
 import * as fs from "fs";
+import type { entry } from '$lib/types';
 
 export const actions = {
 	default: async ({ request }) => {
@@ -37,9 +38,10 @@ export const actions = {
 			return fail(400, {password, passwordInvalid: true, userId, scaleId, description});
 		}
 
-		let entry = { "user_id" : userId, "scale_id" : scaleId, "date" : new Date().toISOString(), "description" : description };
+		let entry:entry = { "user_id" : userId, "scale_id" : scaleId, "date" : new Date().toISOString(), "description" : description };
 		entries.push(entry);
 		fs.writeFileSync("entries.json", JSON.stringify(entries));
+		store.entries = entries;
 
 		redirect(303, "/");
 	}

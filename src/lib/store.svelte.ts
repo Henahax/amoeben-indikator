@@ -22,6 +22,9 @@ export const store = {
     get entries() {
         return entries;
     },
+    set entries(values:entry[]){
+        entries = values;
+    },
     get score() {
         return score;
     },
