@@ -1,21 +1,21 @@
-import { integer, sqliteTable, text, numeric } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, real } from "drizzle-orm/sqlite-core";
 
 const scales = sqliteTable("scales", {
     id: integer().primaryKey(),
     name: text(),
-    value: numeric(),
+    value: real(), // Changed from numeric to real
     icon: text()
 });
 
 const users = sqliteTable("users", {
     id: integer().primaryKey(),
     name: text(),
-    passwordHash: numeric()
+    password: text()
 });
 
 const entries = sqliteTable("entries", {
-    user_id: integer(),
-    scale_id: integer(),
+    user_id: integer().references(() => users.id),
+    scale_id: integer().references(() => scales.id),
     description: text(),
     date: text()
 });
