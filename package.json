@@ -10,7 +10,10 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"lint": "prettier --check . && eslint .",
+		"generate-migrations:db": "drizzle-kit generate --config=src/lib/db/drizzle.config.ts",
+		"push:db": "drizzle-kit push --config=src/lib/db/drizzle.config.ts",
+		"migrate:db": "tsx src/lib/db/migrate.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.3",
@@ -18,10 +21,12 @@
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/bcrypt": "^5.0.2",
+		"@types/better-sqlite3": "^7.6.12",
 		"@types/node": "^22.10.5",
 		"autoprefixer": "^10.4.20",
 		"bits-ui": "^0.22.0",
 		"clsx": "^2.1.1",
+		"drizzle-kit": "^0.30.1",
 		"eslint": "^9.7.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0",
@@ -42,6 +47,9 @@
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^6.7.2",
 		"bcrypt": "^5.1.1",
+		"better-sqlite3": "^11.7.2",
+		"dotenv": "^16.4.7",
+		"drizzle-orm": "^0.38.3",
 		"mode-watcher": "^0.5.0"
 	}
 }
