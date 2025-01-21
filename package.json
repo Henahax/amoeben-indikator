@@ -11,9 +11,9 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
-		"generate-migrations:db": "drizzle-kit generate --config=src/lib/db/drizzle.config.ts",
-		"push:db": "drizzle-kit push --config=src/lib/db/drizzle.config.ts",
-		"migrate:db": "tsx src/lib/db/migrate.ts"
+		"generate-migrations:db": "drizzle-kit generate --config=src/drizzle.config.ts",
+		"push:db": "drizzle-kit push --config=src/drizzle.config.ts",
+		"migrate:db": "tsx src/lib/server/database/migrate.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.3",

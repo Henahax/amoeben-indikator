@@ -1,5 +1,4 @@
-import { type Database } from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import {db} from './client'
 import { scales, users, entries } from './schema';
 import type {scale, user, entry} from '$lib/types'
 
@@ -70,18 +69,10 @@ const initEntries:entry[] = [
     }
 ];
 
-export async function seed(db: Database) {
-    const d = drizzle(db);
+const seed = async () => {
+    await db.insert(users).values(initUsers).execute();
+    await db.insert(scales).values(initScales).execute();
+    await db.insert(entries).values(initEntries).execute();
+};
 
-    // Clear existing data
-    await d.delete(entries);
-    await d.delete(users);
-    await d.delete(scales);
-
-    // Insert new data
-    await d.insert(users).values(initUsers);
-    await d.insert(scales).values(initScales);
-    await d.insert(entries).values(initEntries);
-
-    console.log('Database seeded successfully');
-}
+await seed();
