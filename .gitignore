@@ -21,4 +21,5 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-src/lib/db/sqlite.db
+src/lib/server/database/sqlite.db
+src/lib/server/database/migrations
