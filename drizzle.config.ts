@@ -7,7 +7,7 @@ export default {
   schema: "./src/lib/server/database/schema.ts",
   dialect: "sqlite",
   dbCredentials: {
-    url: process.env.DB_URL as string,
+    url: 'src/lib/server/database/sqlite.db' as string,
   },
   out: "./src/lib/server/database/migrations",
 } satisfies Config;

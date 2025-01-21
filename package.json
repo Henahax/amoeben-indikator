@@ -13,7 +13,8 @@
 		"lint": "prettier --check . && eslint .",
 		"generate-migrations:db": "drizzle-kit generate --config=src/drizzle.config.ts",
 		"push:db": "drizzle-kit push --config=src/drizzle.config.ts",
-		"migrate:db": "tsx src/lib/server/database/migrate.ts"
+		"migrate:db": "tsx src/lib/server/database/migrate.ts",
+		"seed:db": "tsx src/lib/server/database/seed.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.3",

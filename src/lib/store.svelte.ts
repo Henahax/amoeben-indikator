@@ -1,20 +1,15 @@
 import type { user, scale, entry } from '$lib/types';
+
+import { db} from '$lib/server/database/client'
+import {scales}from '$lib/server/database/schema'
+
 import jsonScales from '$lib/scales.json';
 import jsonUsers from '$lib/users.json';
 import jsonEntries from '$lib/entries.json';
 
-let scales = $state(jsonScales as scale[]) as scale[];
-let users = $state(jsonUsers as user[]) as user[];
-let entries = $state(jsonEntries as entry[]) as entry[];
-
-let score = $derived(calculateScore(entries)) as number;
-let highestScale = $derived(highestReached(scales)) as number
-
-entries = cutEntries(entries);
-
 export const store = {
     get scales() {
-        return scales;
+        return myScales;
     },
     get users() {
         return users;
@@ -33,6 +28,14 @@ export const store = {
     }
 }
 
+
+
+
+const getScales = async() => {
+        const myScales = await db.select().from(scales);
+        return myScales;
+    }
+
 function cutEntries(entries: entry[]) {
     return entries.sort(function (a, b) {
         return new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -47,7 +50,7 @@ function calculateScore(entries: entry[]) {
     }
 
     entries.forEach(entry => {
-        const foundScale = scales.find((scale: scale) => scale.id === entry.scale_id);
+        const foundScale = scales2.find((scale: scale) => scale.id === entry.scale_id);
         if (foundScale) {
             sum += foundScale.value;
         }
@@ -66,3 +69,14 @@ function highestReached(scales:scale[]){
 
     return highestReached;
 }
+
+let myScales = $state(await getScales() as scale[]);
+
+let scales2 = $state(jsonScales as scale[]) as scale[];
+let users = $state(jsonUsers as user[]) as user[];
+let entries = $state(jsonEntries as entry[]) as entry[];
+
+let score = $derived(calculateScore(entries)) as number;
+let highestScale = $derived(highestReached(scales2)) as number
+
+entries = cutEntries(entries);
