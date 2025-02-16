@@ -2,9 +2,12 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import Database from 'better-sqlite3';
 import { env } from '$env/dynamic/private';
 import { scales, users } from '$lib/server/db/schema';
+import { count } from 'drizzle-orm';
 
 const client = new Database(env.DATABASE_URL);
 export const db = drizzle(client);
+
+main();
 
 async function main() {
 
@@ -58,13 +61,19 @@ async function main() {
         passwordHash: "$2a$12$1lq0aFtYXbgOr4yR0W47GOuAnEanMGFc03R0x8vUu26EmyzjBl5hu"
     }];
 
-    for (const myScale of myScales) {
-        await db.insert(scales).values(myScale);
+    const countScales = await db.select({ count: count() }).from(scales);
+    const countUsers = await db.select({ count: count() }).from(users);
+
+    if (countScales[0].count === 0) {
+        for (const myScale of myScales) {
+            await db.insert(scales).values(myScale);
+        }
     }
 
-    for (const myUser of myUsers) {
-        await db.insert(users).values(myUser);
-    };
-}
+    if (countUsers[0].count === 0) {
+        for (const myUser of myUsers) {
+            await db.insert(users).values(myUser);
+        };
+    }
 
-main();
+}
