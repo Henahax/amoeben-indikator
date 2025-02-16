@@ -6,7 +6,7 @@
 </script>
 
 <h1>Login/Register</h1>
-<form method="post" action="?/login" use:enhance>
+<form method="post" action="?/login" use:enhance class="flex flex-col">
 	<label>
 		Username
 		<input name="username" />

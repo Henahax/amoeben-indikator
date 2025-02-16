@@ -1,33 +1,42 @@
-import { sqliteTable, text, integer, numeric } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 
-export const user = sqliteTable('user', {
-	id: integer('id').primaryKey(),
+export const users = sqliteTable('users', {
+	id: text('id').primaryKey(),
 	username: text('username').notNull().unique(),
 	passwordHash: text('password_hash').notNull()
 });
 
-export const session = sqliteTable('session', {
-	id: integer('id').primaryKey(),
-	userId: integer('user_id')
+export const sessions = sqliteTable('session', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
 		.notNull()
-		.references(() => user.id),
+		.references(() => users.id),
 	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
 });
 
-export const scale = sqliteTable('scale', {
-	id: integer('id').primaryKey(),
+export const scales = sqliteTable('scales', {
+	id: text('id').primaryKey(),
 	name: text('name').notNull(),
-	value: numeric('value')
+	value: real('value'),
+	icon: text('name').notNull()
 });
 
-export const entry = sqliteTable('entry', {
-	id: integer('id').primaryKey(),
-	userId: integer('user_id').notNull().references(() => user.id),
-	scaleId: integer('scale_id').notNull().references(() => scale.id),
+export const entries = sqliteTable('entries', {
+	id: text('id').primaryKey(),
+	userId: text('user_id').notNull().references(() => users.id),
+	scaleId: text('scale_id').notNull().references(() => scales.id),
 	comment: text('comment').notNull()
 })
 
-export type Entry = typeof entry.$inferSelect
-export type Scale = typeof scale.$inferSelect;
-export type Session = typeof session.$inferSelect;
-export type User = typeof user.$inferSelect;
+export type EntriesSelect = typeof entries.$inferSelect
+export type EntriesInsert = typeof entries.$inferInsert
+
+export type ScalesSelect = typeof scales.$inferSelect;
+export type ScalesInsert = typeof scales.$inferInsert;
+
+
+export type SessionsSelect = typeof sessions.$inferSelect;
+export type SessionsInsert = typeof sessions.$inferInsert;
+
+export type UsersSelect = typeof users.$inferSelect;
+export type UsersInsert = typeof users.$inferInsert;
