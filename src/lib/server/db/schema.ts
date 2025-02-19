@@ -18,7 +18,7 @@ export const scales = sqliteTable('scales', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull().unique(),
 	value: real('value').unique(),
-	icon: text('name').notNull()
+	icon: text('icon').notNull()
 });
 
 export const entries = sqliteTable('entries', {
