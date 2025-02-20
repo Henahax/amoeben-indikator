@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 
 export const users = sqliteTable('users', {
@@ -25,6 +26,7 @@ export const entries = sqliteTable('entries', {
 	id: text('id').primaryKey(),
 	userId: text('user_id').notNull().references(() => users.id),
 	scaleId: text('scale_id').notNull().references(() => scales.id),
+	timestamp: text().default(sql`(CURRENT_TIMESTAMP)`),
 	comment: text('comment').notNull()
 })
 

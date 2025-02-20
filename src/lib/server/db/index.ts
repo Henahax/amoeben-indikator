@@ -66,13 +66,15 @@ async function main() {
             id: "1",
             userId: "1",
             scaleId: "3",
-            comment: "verschüttet"
+            timestamp: "2024-12-09T09:55:02.235Z",
+            comment: "Kaffee verschüttet"
         },
         {
             id: "2",
             userId: "2",
             scaleId: "2",
-            comment: "tisch"
+            timestamp: "2024-12-10T16:22:40Z",
+            comment: "Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch"
         }
     ];
 
