@@ -2,7 +2,7 @@
 	let { data } = $props();
 </script>
 
-<form class="grid grid-cols-[auto_1fr] gap-4">
+<form class="grid w-full max-w-md grid-cols-[auto_1fr] gap-4">
 	<label for="scale">Bewertung</label>
 	<select id="scale">
 		{#each data.scales as scale}
@@ -11,7 +11,7 @@
 	</select>
 
 	<label for="comment">Kommentar</label>
-	<textarea id="comment"></textarea>
+	<textarea id="comment" class="min-h-32"></textarea>
 
 	<label for="user">Benutzer</label>
 	<select id="user">
@@ -23,8 +23,8 @@
 	<label for="password">Passwort</label>
 	<input type="password" id="password" />
 
-	<div class="col-span-full flex w-full">
-		<button type="submit" class="grow border">Eintragen</button>
-		<a href="/" class="border underline">Abbrechen</a>
+	<div class="col-span-full flex w-full gap-4">
+		<button type="submit" class="button button-primary grow">Eintragen</button>
+		<a href="/" class="button button-secondary">Abbrechen</a>
 	</div>
 </form>
