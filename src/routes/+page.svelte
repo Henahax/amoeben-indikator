@@ -67,7 +67,7 @@
 	</section>
 
 	<section class="flex flex-col items-center gap-8 p-4">
-		<a href="/new" class="w-fit underline">Neuer Eintrag</a>
+		<a href="/new" class="button button-primary">Neuer Eintrag</a>
 
 		<div class="grid grid-cols-[auto_auto_1fr] items-center gap-8">
 			{#each data.entries as entry}
