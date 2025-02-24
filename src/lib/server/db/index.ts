@@ -53,7 +53,7 @@ async function main() {
     const myUsers = [{
         id: "1",
         username: "Henahax",
-        passwordHash: "$2a$12$5.cuuld5m3frtT1NnrDQnuccg2r2z/P/Ias2LaiaAG1zONXPxpphC"
+        passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE"
     },
     {
         id: "2",
