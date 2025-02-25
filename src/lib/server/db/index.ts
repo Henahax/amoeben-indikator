@@ -13,37 +13,37 @@ async function main() {
 
     const myScales = [
         {
-            id: "1",
+            id: 1,
             name: "Amöbe",
             value: 0,
             icon: "fa-solid fa-bacterium"
         },
         {
-            id: "2",
+            id: 2,
             name: "Baum",
             value: 0.2,
             icon: "fa-solid fa-tree"
         },
         {
-            id: "3",
+            id: 3,
             name: "Wurm",
             value: 0.4,
             icon: "fa-solid fa-worm"
         },
         {
-            id: "4",
+            id: 4,
             name: "Frosch",
             value: 0.6,
             icon: "fa-solid fa-frog"
         },
         {
-            id: "5",
+            id: 5,
             name: "Hund",
             value: 0.8,
             icon: "fa-solid fa-dog"
         },
         {
-            id: "6",
+            id: 6,
             name: "Mensch",
             value: 1,
             icon: "fa-solid fa-person"
@@ -51,28 +51,28 @@ async function main() {
     ];
 
     const myUsers = [{
-        id: "1",
+        id: 1,
         username: "Henahax",
         passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE"
     },
     {
-        id: "2",
+        id: 2,
         username: "Waetsch",
-        passwordHash: "$2a$12$1lq0aFtYXbgOr4yR0W47GOuAnEanMGFc03R0x8vUu26EmyzjBl5hu"
+        passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$z+sIUY0Ywj3SMwhVIOd3KA$uI5Am3k5LPdUBa3jarYysm1NvYMox0hYObqfmNTig1g"
     }];
 
     const myEntries = [
         {
-            id: "1",
-            userId: "1",
-            scaleId: "3",
+            id: 1,
+            userId: 1,
+            scaleId: 3,
             timestamp: "2024-12-09T09:55:02.235Z",
             comment: "Kaffee verschüttet"
         },
         {
-            id: "2",
-            userId: "2",
-            scaleId: "2",
+            id: 2,
+            userId: 2,
+            scaleId: 2,
             timestamp: "2024-12-10T16:22:40Z",
             comment: "Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch"
         }

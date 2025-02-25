@@ -37,10 +37,9 @@
 	}
 </script>
 
-<div class="flex w-full flex-col items-center gap-8">
-	<h1 class="text-4xl">Amöben Indikator</h1>
-
-	<section>
+<div class="flex w-full flex-col items-center gap-16">
+	<section class="flex w-full flex-col items-center gap-8">
+		<h1 class="text-4xl">Amöben Indikator</h1>
 		<div class="flex w-full justify-between">
 			{#each data.scales as scale}
 				<div
