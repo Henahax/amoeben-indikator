@@ -25,6 +25,8 @@ jobs:
         run: npm ci
 
       - name: Push Database Schema
+        env:
+          DATABASE_URL: 'file:./data/local.db'
         run: npm run db:push
 
       - name: Build
