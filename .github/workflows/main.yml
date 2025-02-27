@@ -24,6 +24,9 @@ jobs:
       - name: Dependecies
         run: npm ci
 
+      - name: Push Database Schema
+        run: npm run db:push
+
       - name: Build
         run: npm run build
 

@@ -1,8 +1,20 @@
-FROM node:22
+FROM node:20-slim
+
 WORKDIR /app
-COPY . .
+
+COPY package*.json ./
 RUN npm ci
+
+COPY . .
+
+RUN mkdir -p /data && \
+    chown -R node:node /data && \
+    chown -R node:node /app
+
+USER node
+
 RUN npm run build
-RUN rm -rf src/ static/ emailTemplates/ docker-compose.yml
-USER node:node
-CMD ["node","build/index.js"]
+
+EXPOSE 3000
+
+CMD ["node", "build"]
