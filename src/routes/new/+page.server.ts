@@ -1,48 +1,63 @@
-import type { Actions } from './$types';
+import { db } from '$lib/server/db';
+import { scales, users, entries, type EntriesInsert } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
-import { store } from '$lib/store.svelte.js';
-import bcrypt from 'bcrypt'
-import entries from '$lib/entries.json';
-import * as fs from "fs";
-import type { entry } from '$lib/types';
+import * as argon2 from '@node-rs/argon2';
+
+let myScales = await db.select().from(scales).orderBy(scales.value);
+let myUsers = await db.select().from(users);
+
+export const load = async () => {
+    return {
+        scales: myScales,
+        users: myUsers
+    };
+};
 
 export const actions = {
-	default: async ({ request }) => {
+    default: async ({ request }) => {
 
-		let data = await request.formData();
+        let data = await request.formData();
 
-		let userId = Number(data.get("user_id"));
-		let scaleId = Number(data.get("scale_id"));
-		let description = data.get("description")?.toString();
-		let password = data.get("password")?.toString();
+        let userId = Number(data.get("user"));
+        let scaleId = Number(data.get("scale"));
+        let comment = data.get("description")?.toString();
+        let password = data.get("password")?.toString();
 
-		if(userId < 1){
-			return fail(400, {userId, userInvalid: true, scaleId, description});
-		}
+        let test = "supergeheim";
+        let test2 = await argon2.hash(test);
+        console.log(test2);
 
-		if(scaleId < 1){
-			return fail(400, {scaleId, scaleInvalid: true, userId, description});
-		}
+        if (userId < 1) {
+            return fail(400, { userId, userInvalid: true, scaleId, description: comment });
+        }
 
-		if(!description || description.length < 1){
-			return fail(400, {description, descriptionInvalid: true, userId, scaleId});
-		}
-		
-		if(!password || password.length < 1){
-			return fail(400, {password, passwordInvalid: true, userId, scaleId, description});
-		}
+        if (scaleId < 1) {
+            return fail(400, { scaleId, scaleInvalid: true, userId, description: comment });
+        }
 
-		const user = store.users.find(user => user.id === userId);
+        if (!comment || comment.length < 1) {
+            return fail(400, { description: comment, descriptionInvalid: true, userId, scaleId });
+        }
 
-		if (!user || !(await bcrypt.compareSync(password, user.password))) {
-			return fail(400, {password, passwordInvalid: true, userId, scaleId, description});
-		}
+        if (!password || password.length < 1) {
+            return fail(400, { password, passwordInvalid: true, userId, scaleId, description: comment });
+        }
 
-		let entry:entry = { "user_id" : userId, "scale_id" : scaleId, "date" : new Date().toISOString(), "description" : description };
-		entries.push(entry);
-		fs.writeFileSync("entries.json", JSON.stringify(entries));
-		store.entries = entries;
+        const user = myUsers.find(user => Number(user.id) === userId);
 
-		redirect(303, "/");
-	}
-} satisfies Actions;
+        try {
+            if (!user || !(await argon2.verify(user.passwordHash, password))) {
+                return fail(400, { password, passwordInvalid: true, userId, scaleId, description: comment });
+            }
+        } catch (error) {
+            console.error('Password verification error:', error);
+            return fail(400, { password, passwordInvalid: true, userId, scaleId, description: comment });
+        }
+
+        const entry: EntriesInsert = { userId: userId, scaleId: scaleId, timestamp: new Date().toISOString(), comment: comment };
+
+        await db.insert(entries).values(entry);
+
+        redirect(303, "/");
+    }
+}

@@ -1,13 +1,16 @@
-import * as dotenv from "dotenv";
-import type { Config } from "drizzle-kit";
+import { defineConfig } from 'drizzle-kit';
+import { loadEnv } from 'vite';
 
-dotenv.config();
+const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
 
-export default {
-  schema: "./src/lib/server/database/schema.ts",
-  dialect: "sqlite",
-  dbCredentials: {
-    url: 'src/lib/server/database/sqlite.db' as string,
-  },
-  out: "./src/lib/server/database/migrations",
-} satisfies Config;
+export default defineConfig({
+	schema: './src/lib/server/db/schema.ts',
+
+	dbCredentials: {
+		url: env.DATABASE_URL
+	},
+
+	verbose: true,
+	strict: true,
+	dialect: 'sqlite'
+});

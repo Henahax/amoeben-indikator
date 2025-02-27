@@ -1,90 +1,124 @@
 <script lang="ts">
-	import type { user, scale } from '$lib/types';
+	let { data } = $props();
 
-	import { Tween } from 'svelte/motion';
-	import { cubicOut } from 'svelte/easing';
+	let highestReached = $derived(getHighestReached(data));
 
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Progress } from '$lib/components/ui/progress';
+	function getHighestReached(data: any) {
+		let highest: { id: string; value: number } | undefined;
 
-	import { store } from '$lib/store.svelte.js';
+		data.scales.forEach((scale: any) => {
+			if (data.score >= scale.value) {
+				highest = scale;
+			}
+		});
 
-	let progress = $state(
-		new Tween(0, {
-			delay: 0,
-			duration: 2500,
-			easing: cubicOut
-		})
-	);
+		if (highest) {
+			return highest.id;
+		}
 
-	$effect(() => {
-		progress.target = store.score;
-	});
+		return data.scales[0].id;
+	}
+
+	function formatDate(dateString: string) {
+		const date = new Date(dateString);
+		return date.toLocaleString('de-DE', {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric'
+		});
+	}
+
+	function formatTime(dateString: string) {
+		const date = new Date(dateString);
+		return date.toLocaleString('de-DE', {
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+	}
 </script>
 
-<section class="flex flex-col gap-8">
-	<h1 class="text-center text-4xl">Amöben Indikator</h1>
-	<div class="flex flex-col gap-4 sm:gap-2">
-		<ul class="flex flex-row justify-between">
-			{#each store.scales as scale}
-				<li
-					class="flex flex-col items-center justify-end max-sm:px-4 {store.highestScale === scale.id
-						? 'text-primary text-xl font-bold'
-						: 'text-neutral-500'}"
-					title="≥{scale.value}"
+<div class="flex w-full flex-col items-center gap-16">
+	<section class="flex w-full flex-col items-center gap-8">
+		<h1 class="text-4xl">Amöben Indikator</h1>
+		<div class="flex w-full justify-between">
+			{#each data.scales as scale}
+				<div
+					class={`grid grid-cols-1 place-items-center text-3xl ${scale.id === highestReached ? 'highest-reached' : 'opacity-25'}`}
+					title={scale.name}
 				>
-					<i
-						class="{scale.icon} {store.highestScale === scale.id
-							? 'animate-pulse text-3xl'
-							: 'text-xl'}"
-					></i>
-					<div class="hidden sm:block">
-						{scale.name}
-					</div>
-				</li>
+					<i class={`${scale.icon} ${scale.id === highestReached ? 'animate-pulse' : ''}`}></i>
+					<span class="hidden text-base font-bold sm:block">{scale.name}</span>
+				</div>
 			{/each}
-		</ul>
-		<Progress value={progress.current} max={1} class="h-8 w-full" title={store.score.toString()} />
-	</div>
-</section>
-<section>
-	<div class="mx-auto w-fit">
-		<div class="flex w-full items-center justify-between gap-4">
-			<p class="font-bold text-neutral-500">Historie:</p>
-			<Button variant="default" href="/new">Neuer Eintrag</Button>
 		</div>
-		<ul class="mx-auto w-fit divide-y divide-neutral-500 divide-opacity-25">
-			{#each store.entries as entry}
-				<li class="grid grid-cols-[auto_auto_1fr] gap-x-8 gap-y-8 py-4">
-					<div
-						class="grid-subgrid col-span-2 grid grid-cols-1 content-center gap-x-8 gap-y-2 sm:col-span-1 sm:grid-cols-2"
-					>
-						<div class="flex flex-col justify-center">
-							<div>
-								{store.users.find((user: user) => user.id === entry.user_id)?.name ??
-									'Unknown User'}
-							</div>
+		<meter
+			id="indicator"
+			low="0.4"
+			high="0.8"
+			optimum="1"
+			value={data.score}
+			title={data.score.toString()}
+		>
+		</meter>
+	</section>
+
+	<section class="flex w-full flex-col items-center gap-8">
+		<a href="/new" class="button button-primary">Neuer Eintrag</a>
+
+		<div class="card w-fit px-6 py-2">
+			<div class="grid grid-cols-[auto_auto_1fr] items-center divide-y divide-neutral-500">
+				{#each data.entries as entry}
+					<div class="col-span-full grid grid-cols-subgrid items-center gap-4 py-4 sm:gap-8">
+						<div class="flex flex-col">
+							<span>{entry.users?.username}</span>
 							<div class="text-xs text-neutral-500">
-								{new Date(entry.date).toLocaleString('de-DE', {
-									day: '2-digit',
-									month: '2-digit',
-									year: 'numeric',
-									hour: '2-digit',
-									minute: '2-digit',
-									second: '2-digit'
-								})}
+								<span>{formatDate(entry.entries.timestamp ?? '')}</span>
+								<span>{formatTime(entry.entries.timestamp ?? '')}</span>
 							</div>
 						</div>
-						<div class="flex items-center gap-2 font-bold">
-							<i class={store.scales.find((scale: scale) => entry.scale_id === scale.id)?.icon}></i>
-							{store.scales.find((scale: scale) => entry.scale_id === scale.id)?.name}
+						<div class="flex flex-col items-center text-lg">
+							<i class={data.scales.find((scale) => scale.id === entry.entries.scaleId)?.icon}></i>
+							<span class="text-base"
+								>{data.scales.find((scale) => scale.id === entry.entries.scaleId)?.name}</span
+							>
 						</div>
+
+						<div>{entry.entries.comment}</div>
 					</div>
-					<div class="flex items-center text-sm">
-						{entry.description}
-					</div>
-				</li>
-			{/each}
-		</ul>
-	</div>
-</section>
+				{/each}
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	section {
+		width: 100%;
+	}
+
+	.highest-reached {
+		color: var(--color-business-indigo-500);
+	}
+
+	meter {
+		height: 2rem;
+		width: 100%;
+		opacity: 0.75;
+	}
+
+	meter::-webkit-meter-bar {
+		background: var(--color-neutral-800);
+	}
+
+	meter::-webkit-meter-optimum-value {
+		background: green;
+	}
+
+	meter::-webkit-meter-suboptimum-value {
+		background: yellow;
+	}
+
+	meter::-webkit-meter-even-less-good-value {
+		background: red;
+	}
+</style>
