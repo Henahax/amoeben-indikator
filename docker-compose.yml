@@ -1,18 +1,10 @@
-version: '2.1'
 services:
-  nginx:
-    image: henahax/amoeben-indikator:latest
-    container_name: amoeben-indikator
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Berlin
-      - DATABASE_URL=/data/local.db
+  db:
+    image: postgres
+    restart: always
     ports:
-      - 8080:3000
-    volumes:
-      - db-data:/data
-    restart: unless-stopped
-
-volumes:
-  db-data:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: local
