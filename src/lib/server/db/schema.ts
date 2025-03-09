@@ -1,20 +1,37 @@
-import { pgTable, serial, text, integer, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, real, timestamp } from 'drizzle-orm/pg-core';
 
-export const user = pgTable('user', {
-	id: text('id').primaryKey(),
-	age: integer('age'),
+export const users = pgTable('users', {
+	id: serial('id').primaryKey().notNull(),
 	username: text('username').notNull().unique(),
 	passwordHash: text('password_hash').notNull()
 });
 
-export const session = pgTable('session', {
-	id: text('id').primaryKey(),
+export const sessions = pgTable('sessions', {
+	id: serial('id').primaryKey().notNull(),
 	userId: text('user_id')
 		.notNull()
-		.references(() => user.id),
+		.references(() => users.id),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
-export type Session = typeof session.$inferSelect;
+export const scales = pgTable('scales', {
+	id: serial('id').primaryKey().notNull(),
+	name: text('name').notNull().unique(),
+	value: real('value').notNull()
+});
 
-export type User = typeof user.$inferSelect;
+export const entries = pgTable('entries', {
+	id: serial('id').primaryKey().notNull(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id),
+	scaleId: text('scale_id')
+		.notNull()
+		.references(() => scales.id),
+	comment: text('comment').notNull()
+});
+
+export type Session = typeof sessions.$inferSelect;
+export type User = typeof users.$inferSelect;
+export type Scale = typeof scales.$inferSelect;
+export type Entry = typeof entries.$inferSelect;
