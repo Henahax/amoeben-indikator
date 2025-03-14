@@ -1,4 +1,4 @@
-import { db } from "./db.ts";
+import { db } from "../db/db.ts";
 import { scales } from "./schema.ts";
 
 const seedScales = [
@@ -35,6 +35,9 @@ const seedScales = [
 ];
 
 const main = async () => {
+
+    console.log(db.$client);
+
     try {
         for (const scale of seedScales) {
             await db.insert(scales).values(scale);

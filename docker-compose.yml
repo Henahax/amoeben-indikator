@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres
+    container_name: amoeben-indikator-db
     restart: always
     ports:
       - 5432:5432
@@ -11,13 +12,13 @@ services:
     volumes:
       - local_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -d amoeben-indikator" ]
       interval: 30s
       timeout: 10s
       retries: 5
   admin:
     image: dpage/pgadmin4
-    container_name: pgadmin4_container
+    container_name: amoeben-indikator-admin
     restart: always
     ports:
       - "8888:80"

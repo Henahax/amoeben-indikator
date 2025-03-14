@@ -1,16 +1,10 @@
-import { defineConfig } from 'drizzle-kit';
-import { loadEnv } from 'vite';
-
-const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
+import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-	schema: './src/lib/server/db/schema.ts',
-
+	out: "./drizzle",
+	schema: "./src/lib/server/db/schema.ts",
+	dialect: "postgresql",
 	dbCredentials: {
-		url: env.DATABASE_URL
+		url: Deno.env.get("DATABASE_URL")!,
 	},
-
-	verbose: true,
-	strict: true,
-	dialect: "postgresql"
 });
