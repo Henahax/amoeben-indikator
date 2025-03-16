@@ -1,5 +1,17 @@
-import { db } from "./db.ts";
-import { scales } from "./schema.ts";
+import { config } from 'dotenv';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { scales } from "./schema";
+
+// Load environment variables from .env file
+config();
+
+// Create a new connection for seeding
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error('DATABASE_URL is not set');
+
+const client = postgres(connectionString);
+const db = drizzle(client);
 
 const seedScales = [
     {
@@ -37,12 +49,20 @@ const seedScales = [
 const main = async () => {
     try {
         for (const scale of seedScales) {
-            await db.insert(scales).values(scale);
-            console.log(`Inserted scale: ${scale.name}`);
+            await db
+                .insert(scales)
+                .values(scale)
+                .onConflictDoUpdate({
+                    target: scales.name,
+                    set: scale
+                });
+            console.log(`Processed scale: ${scale.name}`);
         }
-        console.log('Database seeded successfully');
+        console.log('Database seeding completed');
+        await client.end();
     } catch (error) {
         console.error('Error seeding database:', error);
+        await client.end();
         throw error;
     }
 }
@@ -50,4 +70,5 @@ const main = async () => {
 main()
     .catch((err) => {
         console.error(err);
+        process.exit(1);
     });

@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 
-	let { data }: PageProps = $props();
+	interface PageData {
+		scales: { name: string }[];
+	}
+
+	let { data }: { data: PageData } = $props();
 </script>
 
 <h1>Welcome to SvelteKit</h1>

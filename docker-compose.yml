@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres
+    container_name: db
     restart: always
     ports:
       - 5432:5432
@@ -10,14 +11,9 @@ services:
       POSTGRES_DB: amoeben-indikator
     volumes:
       - local_pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
   admin:
     image: dpage/pgadmin4
-    container_name: pgadmin4_container
+    container_name: admin
     restart: always
     ports:
       - "8888:80"

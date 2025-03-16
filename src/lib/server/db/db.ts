@@ -1,12 +1,10 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
-import { users as UserSchema, sessions as SessionSchema, scales as ScaleSchema, entries as EntrySchema } from "./schema.ts";
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema';
+import { env } from '$env/dynamic/private';
+if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+const client = postgres(env.DATABASE_URL);
 
-const { Pool } = pg;
-
-export const db = drizzle({
-    client: new Pool({
-        connectionString: Deno.env.get("DATABASE_URL"),
-    }),
-    schema: { UserSchema, SessionSchema, ScaleSchema, EntrySchema },
+export const db = drizzle(client, {
+	schema
 });
