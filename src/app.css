@@ -2,3 +2,22 @@
 @import '../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+:root {
+	--background: var(--color-neutral-950);
+	--foreground: var(--color-neutral-50);
+	--foreground-muted: var(--color-neutral-500);
+	--card: var(--color-neutral-900);
+	--border: 1px solid var(--color-neutral-500);
+
+	--primary: red;
+
+	background-color: var(--background);
+	color: var(--foreground);
+}
+
+.btn {
+	background-color: var(--primary);
+	padding: 0.5rem 1rem;
+	border-radius: 0.5rem;
+}
