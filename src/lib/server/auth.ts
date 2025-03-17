@@ -18,8 +18,8 @@ export function generateSessionToken() {
 export async function createSession(token: string, userId: number) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const session: table.Session = {
-		id: parseInt(sessionId, 16),
-		userId: parseInt(userId),
+		id: sessionId,
+		userId: userId,
 		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
 	};
 	await db.insert(table.sessions).values(session);
@@ -34,12 +34,10 @@ export async function validateSessionToken(token: string) {
 			// Adjust user table here to tweak returned data
 			user: { id: table.users.id, username: table.users.username },
 			session: table.sessions
-			user: { id: table.users.id, username: table.users.username },
-			session: table.sessions
 		})
 		.from(table.sessions)
 		.innerJoin(table.users, eq(table.sessions.userId, table.users.id))
-		.where(eq(table.sessions.id, parseInt(sessionId, 16)));
+		.where(eq(table.sessions.id, sessionId));
 
 	if (!result) {
 		return { session: null, user: null };
@@ -58,9 +56,7 @@ export async function validateSessionToken(token: string) {
 		session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
 		await db
 			.update(table.sessions)
-			.update(table.sessions)
 			.set({ expiresAt: session.expiresAt })
-			.where(eq(table.sessions.id, session.id));
 			.where(eq(table.sessions.id, session.id));
 	}
 
@@ -70,7 +66,7 @@ export async function validateSessionToken(token: string) {
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;
 
 export async function invalidateSession(sessionId: string) {
-	await db.delete(table.sessions).where(eq(table.sessions.id, parseInt(sessionId)));
+	await db.delete(table.sessions).where(eq(table.sessions.id, sessionId));
 }
 
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {

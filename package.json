@@ -45,11 +45,12 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome-free": "^6.7.2",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
-		"drizzle-orm": "^0.40.0",
 		"dotenv": "^16.4.1",
+		"drizzle-orm": "^0.40.0",
 		"postgres": "^3.4.5"
 	}
 }
