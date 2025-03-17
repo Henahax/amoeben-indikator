@@ -47,6 +47,9 @@ const seedScales = [
 ];
 
 const main = async () => {
+
+    console.log(db.$client);
+
     try {
         for (const scale of seedScales) {
             await db
