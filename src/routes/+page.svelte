@@ -6,6 +6,32 @@
 	}
 
 	let { data }: { data: PageData } = $props();
+
+	const entries = [
+		{
+			user: 'Henahax',
+			scaleId: 3,
+			timestamp: '2024-12-09T09:55:02.235Z',
+			comment: 'Kaffee verschüttet'
+		},
+		{
+			user: 'Waetsch',
+			scaleId: 2,
+			timestamp: '2024-12-10T16:22:40Z',
+			comment: 'Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch'
+		}
+	];
+
+	function formatDate(dateStr: string): string {
+		const date = new Date(dateStr);
+		return date.toLocaleString('de-DE', {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+	}
 </script>
 
 <div class="flex flex-col gap-32">
@@ -32,42 +58,24 @@
 			<a href="new" class="btn">Neuer Eintrag</a>
 		</div>
 
-		<div class="grid grid-cols-[auto_auto_1fr] items-center gap-x-6 divide-y divide-neutral-500">
-			<!--each-->
-			<div class="col-span-3 grid grid-cols-subgrid items-center p-4">
-				<div>
-					<div class="text-lg">Henahax</div>
-					<div class="text-sm">01.01.2025</div>
+		<div
+			class="mx-auto grid w-fit grid-cols-[auto_auto_1fr] items-center gap-x-6 divide-y divide-neutral-500"
+		>
+			{#each entries as entry}
+				<div class="col-span-3 grid grid-cols-subgrid items-center py-4">
+					<div>
+						<div class="text-lg">{entry.user}</div>
+						<div class="text-sm">{formatDate(entry.timestamp)}</div>
+					</div>
+					<div class="text-center text-2xl">
+						<i class="fa-solid fa-house"></i>
+						<div class="text-sm">Baum</div>
+					</div>
+					<div>
+						{entry.comment}
+					</div>
 				</div>
-				<div class="text-center text-2xl">
-					<i class="fa-solid fa-house"></i>
-					<div class="text-sm">Baum</div>
-				</div>
-				<div>
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-					invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-					accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-					sanctus est Lorem ipsum dolor sit amet.
-				</div>
-			</div>
-			<!--next each-->
-			<div class="col-span-3 grid grid-cols-subgrid items-center p-4">
-				<div>
-					<div class="text-lg">Henahax</div>
-					<div class="text-sm">01.01.2025</div>
-				</div>
-				<div class="text-center text-2xl">
-					<i class="fa-solid fa-house"></i>
-					<div class="text-sm">Baum</div>
-				</div>
-				<div>
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-					invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-					accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-					sanctus est Lorem ipsum dolor sit amet.
-				</div>
-			</div>
-			<!--end each-->
+			{/each}
 		</div>
 	</div>
 </div>
