@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { scales } from "./schema";
+import { scales, users, entries } from "./schema";
 
 // Load environment variables from .env file
 config();
@@ -46,6 +46,27 @@ const seedScales = [
     }
 ];
 
+const seedUsers = [{
+    username: "Henahax",
+    passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE"
+},
+{
+    username: "Waetsch",
+    passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$z+sIUY0Ywj3SMwhVIOd3KA$uI5Am3k5LPdUBa3jarYysm1NvYMox0hYObqfmNTig1g"
+}];
+
+const seedEntries = [{
+    userId: 1,
+    scaleId: 3,
+    date: new Date("2024-12-09T09:55:02.235Z"),
+    comment: "Kaffee verschüttet"
+}, {
+    userId: 2,
+    scaleId: 2,
+    date: new Date("2024-12-10T16:22:40Z"),
+    comment: "Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch"
+}];
+
 const main = async () => {
 
     console.log(db.$client);
@@ -61,8 +82,33 @@ const main = async () => {
                 });
             console.log(`Processed scale: ${scale.name}`);
         }
+
+        for (const user of seedUsers) {
+            await db
+                .insert(users)
+                .values(user)
+                .onConflictDoUpdate({
+                    target: users.username,
+                    set: user
+                });
+            console.log(`Processed user: ${user.username}`);
+        }
+
+        for (const entry of seedEntries) {
+            await db
+                .insert(entries)
+                .values(entry)
+                .onConflictDoUpdate({
+                    target: entries.id,
+                    set: entry
+                });
+            console.log(`Processed user: ${entry.comment}`);
+        }
+
         console.log('Database seeding completed');
+
         await client.end();
+
     } catch (error) {
         console.error('Error seeding database:', error);
         await client.end();

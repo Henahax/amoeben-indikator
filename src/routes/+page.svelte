@@ -3,9 +3,13 @@
 
 	interface PageData {
 		scales: { name: string; icon: string }[];
+		users: { username: string; passwordHash: string }[];
+		entries: { userId: number; scaleId: number; timestamp: Date; comment: string }[];
 	}
 
 	let { data }: { data: PageData } = $props();
+
+	console.log(data);
 
 	const entries = [
 		{
@@ -42,7 +46,7 @@
 			<div class="flex flex-col gap-2">
 				<div class="grid w-full grid-cols-[auto_auto_auto_auto_auto_auto] justify-between">
 					{#each data.scales as item}
-						<div class="flex flex-col items-center text-3xl">
+						<div class="flex flex-col items-center text-3xl text-neutral-500">
 							<i class={item.icon}></i>
 							<p class="text-xl max-sm:hidden">{item.name}</p>
 						</div>
@@ -79,3 +83,8 @@
 		</div>
 	</div>
 </div>
+
+{#each entries as entry}
+	<p>{entry.timestamp}</p>
+	<p>{entry.comment}</p>
+{/each}

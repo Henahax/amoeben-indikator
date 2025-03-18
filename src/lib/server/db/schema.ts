@@ -1,4 +1,5 @@
 import { pgTable, serial, text, real, timestamp } from 'drizzle-orm/pg-core';
+import { sql } from "drizzle-orm";
 
 export const users = pgTable('users', {
 	id: serial('id').primaryKey().notNull(),
@@ -29,7 +30,8 @@ export const entries = pgTable('entries', {
 	scaleId: serial('scale_id')
 		.notNull()
 		.references(() => scales.id),
-	comment: text('comment').notNull()
+	comment: text('comment').notNull(),
+	date: timestamp('date', { withTimezone: true, mode: 'date' }).notNull().default(sql`now()`)
 });
 
 export type Session = typeof sessions.$inferSelect;
