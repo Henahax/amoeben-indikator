@@ -1,13 +1,13 @@
 import { db } from "../lib/server/db/db";
 import { scales, users, entries } from "../lib/server/db/schema";
+import { eq, desc } from "drizzle-orm";
 
 export const load = async () => {
     const myScales = await db.select().from(scales).orderBy(scales.value);
-    const myUsers = await db.select().from(users).orderBy(users.id);
-    const myEntries = await db.select().from(entries).orderBy(entries.id);
+    const myEntries = await db.select().from(entries).leftJoin(scales, eq(scales.id, entries.scaleId)).leftJoin(users, eq(users.id, entries.userId)).orderBy(desc(entries.date)).limit(5);
+
     return {
         scales: myScales,
-        users: myUsers,
         entries: myEntries
     };
 };

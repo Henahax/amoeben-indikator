@@ -1,30 +1,11 @@
 <script lang="ts">
-	import type { PageProps } from './$types';
+	import { scale } from 'svelte/transition';
 
-	interface PageData {
-		scales: { name: string; icon: string }[];
-		users: { username: string; passwordHash: string }[];
-		entries: { userId: number; scaleId: number; timestamp: Date; comment: string }[];
-	}
+	let { data }: { data: any } = $props();
 
-	let { data }: { data: PageData } = $props();
+	let score = $derived(getScore(data.entries));
 
-	console.log(data);
-
-	const entries = [
-		{
-			user: 'Henahax',
-			scaleId: 3,
-			timestamp: '2024-12-09T09:55:02.235Z',
-			comment: 'Kaffee verschüttet'
-		},
-		{
-			user: 'Waetsch',
-			scaleId: 2,
-			timestamp: '2024-12-10T16:22:40Z',
-			comment: 'Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch'
-		}
-	];
+	let highest = $derived(highestReached(data.scales, score));
 
 	function formatDate(dateStr: string): string {
 		const date = new Date(dateStr);
@@ -36,6 +17,34 @@
 			minute: '2-digit'
 		});
 	}
+
+	function getScore(entries: any): number {
+		let score = 0;
+		let count = 0;
+
+		if (!entries || entries.length === 0) return 0;
+
+		entries.forEach((entry: any) => {
+			score += entry.scales.value;
+			count++;
+		});
+
+		return Math.round((score / count) * 100) / 100;
+	}
+
+	function highestReached(scales: any, score: number) {
+		let highest = 0;
+
+		if (!scales || scales.length === 0) return 0;
+
+		scales.forEach((scale: any) => {
+			if (score >= scale.value) {
+				highest = scale.id;
+			}
+		});
+
+		return highest;
+	}
 </script>
 
 <div class="flex flex-col gap-32">
@@ -45,15 +54,19 @@
 
 			<div class="flex flex-col gap-2">
 				<div class="grid w-full grid-cols-[auto_auto_auto_auto_auto_auto] justify-between">
-					{#each data.scales as item}
-						<div class="flex flex-col items-center text-3xl text-neutral-500">
-							<i class={item.icon}></i>
-							<p class="text-xl max-sm:hidden">{item.name}</p>
+					{#each data.scales as scale}
+						<div
+							class="flex flex-col items-center text-3xl {highest === scale.id
+								? 'text-white-500 animate-pulse'
+								: 'text-neutral-700'}"
+						>
+							<i class={scale.icon}></i>
+							<p class="text-xl max-sm:hidden">{scale.name}</p>
 						</div>
 					{/each}
 				</div>
 
-				<progress value="0.5" class="w-full"></progress>
+				<progress value={score} class="w-full"></progress>
 			</div>
 		</div>
 	</div>
@@ -65,26 +78,21 @@
 		<div
 			class="mx-auto grid w-fit grid-cols-[auto_auto_1fr] items-center gap-x-6 divide-y divide-neutral-500"
 		>
-			{#each entries as entry}
+			{#each data.entries as entry}
 				<div class="col-span-3 grid grid-cols-subgrid items-center py-4">
 					<div>
-						<div class="text-lg">{entry.user}</div>
-						<div class="text-sm">{formatDate(entry.timestamp)}</div>
+						<div class="text-lg">{entry.users.username}</div>
+						<div class="text-sm">{formatDate(entry.entries.date)}</div>
 					</div>
 					<div class="text-center text-2xl">
-						<i class="fa-solid fa-house"></i>
-						<div class="text-sm">Baum</div>
+						<i class={entry.scales.icon}></i>
+						<div class="text-sm">{entry.scales.name}</div>
 					</div>
 					<div>
-						{entry.comment}
+						{entry.entries.comment}
 					</div>
 				</div>
 			{/each}
 		</div>
 	</div>
 </div>
-
-{#each entries as entry}
-	<p>{entry.timestamp}</p>
-	<p>{entry.comment}</p>
-{/each}
