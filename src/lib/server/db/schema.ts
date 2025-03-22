@@ -1,4 +1,4 @@
-import { pgTable, serial, text, real, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, real, timestamp, integer } from 'drizzle-orm/pg-core';
 import { sql } from "drizzle-orm";
 
 export const users = pgTable('users', {
@@ -9,7 +9,7 @@ export const users = pgTable('users', {
 
 export const sessions = pgTable('sessions', {
 	id: text('id').primaryKey().notNull(),
-	userId: serial('user_id')
+	userId: integer('user_id')
 		.notNull()
 		.references(() => users.id),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
