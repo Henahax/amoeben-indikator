@@ -15,31 +15,37 @@ const db = drizzle(client);
 
 const seedScales = [
     {
+        id: 1,
         name: "Amöbe",
         value: 0,
         icon: "fa-solid fa-bacterium"
     },
     {
+        id: 2,
         name: "Baum",
         value: 0.2,
         icon: "fa-solid fa-tree"
     },
     {
+        id: 3,
         name: "Wurm",
         value: 0.4,
         icon: "fa-solid fa-worm"
     },
     {
+        id: 4,
         name: "Frosch",
         value: 0.6,
         icon: "fa-solid fa-frog"
     },
     {
+        id: 5,
         name: "Hund",
         value: 0.8,
         icon: "fa-solid fa-dog"
     },
     {
+        id: 6,
         name: "Mensch",
         value: 0.8,
         icon: "fa-solid fa-person"
@@ -47,20 +53,24 @@ const seedScales = [
 ];
 
 const seedUsers = [{
+    id: 1,
     username: "Henahax",
     passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE"
 },
 {
+    id: 2,
     username: "Waetsch",
     passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$z+sIUY0Ywj3SMwhVIOd3KA$uI5Am3k5LPdUBa3jarYysm1NvYMox0hYObqfmNTig1g"
 }];
 
 const seedEntries = [{
+    id: 1,
     userId: 1,
     scaleId: 3,
     date: new Date("2024-12-09T09:55:02.235Z"),
     comment: "Kaffee verschüttet"
 }, {
+    id: 2,
     userId: 2,
     scaleId: 2,
     date: new Date("2024-12-10T16:22:40Z"),
