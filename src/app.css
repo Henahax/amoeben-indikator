@@ -16,6 +16,10 @@
 	color: var(--foreground);
 }
 
+input {
+	color: black;
+}
+
 progress[value]::-webkit-progress-bar {
 	appearance: none;
 	background-color: var(--color-neutral-500);

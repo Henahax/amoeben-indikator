@@ -1,10 +1,10 @@
 import { hash, verify } from '@node-rs/argon2';
 import { encodeBase32LowerCase } from '@oslojs/encoding';
 import { fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db/db';
-import * as table from '$lib/server/db/schema';
+import { users } from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
@@ -29,7 +29,9 @@ export const actions: Actions = {
 			return fail(400, { message: 'Invalid password (min 6, max 255 characters)' });
 		}
 
-		const results = await db.select().from(table.users).where(eq(table.users.username, username));
+		const results = await db.select()
+			.from(users)
+			.where(sql`LOWER(${users.username}) = LOWER(${username})`);
 
 		const existingUser = results.at(0);
 		if (!existingUser) {
@@ -46,9 +48,13 @@ export const actions: Actions = {
 			return fail(400, { message: 'Incorrect username or password' });
 		}
 
+		console.log('User logged in:', existingUser.username);
+
 		const sessionToken = auth.generateSessionToken();
 		const session = await auth.createSession(sessionToken, existingUser.id);
 		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+
+		console.log('User logged in:', existingUser.username);
 
 		return redirect(302, '/demo/lucia');
 	},
@@ -74,7 +80,7 @@ export const actions: Actions = {
 		});
 
 		try {
-			await db.insert(table.users).values({ id: userId, username, passwordHash });
+			await db.insert(users).values({ id: userId, username, passwordHash });
 
 			const sessionToken = auth.generateSessionToken();
 			const session = await auth.createSession(sessionToken, userId);
@@ -98,7 +104,7 @@ function validateUsername(username: unknown): username is string {
 		typeof username === 'string' &&
 		username.length >= 3 &&
 		username.length <= 31 &&
-		/^[a-z0-9_-]+$/.test(username)
+		/^[a-zA-Z0-9_-]+$/.test(username)
 	);
 }
 

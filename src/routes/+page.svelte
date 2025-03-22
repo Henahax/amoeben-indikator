@@ -82,15 +82,15 @@
 				<div class="col-span-3 grid grid-cols-subgrid items-center py-4">
 					<div>
 						<div class="text-lg">{entry.users.username}</div>
-						<div class="text-sm">{formatDate(entry.entries.date)}</div>
+						<div class="text-xs">{formatDate(entry.entries.date)}</div>
 					</div>
-					<div class="text-center text-2xl">
+					<figure class="text-center text-2xl">
 						<i class={entry.scales.icon}></i>
-						<div class="text-sm">{entry.scales.name}</div>
-					</div>
-					<div>
+						<figcaption class="text-xs">{entry.scales.name}</figcaption>
+					</figure>
+					<p>
 						{entry.entries.comment}
-					</div>
+					</p>
 				</div>
 			{/each}
 		</div>
