@@ -61,7 +61,7 @@
 								: 'text-neutral-700'}"
 						>
 							<i class={scale.icon}></i>
-							<p class="text-xl max-sm:hidden">{scale.name}</p>
+							<p class="text-base max-sm:hidden">{scale.name}</p>
 						</div>
 					{/each}
 				</div>
