@@ -50,8 +50,6 @@
 <div class="flex flex-col gap-32">
 	<div class="flex flex-col text-center">
 		<div class="flex flex-col">
-			<h1 class="py-16 text-5xl">Amöben-Indikator</h1>
-
 			<div class="flex flex-col gap-2">
 				<div class="grid w-full grid-cols-[auto_auto_auto_auto_auto_auto] justify-between">
 					{#each data.scales as scale}
