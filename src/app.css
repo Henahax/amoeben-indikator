@@ -32,8 +32,19 @@ textarea,
 }
 
 .btn {
+	border-color: var(--primary);
+	width: fit-content;
 	cursor: pointer;
 	padding: 0.5rem 1rem;
+}
+
+.btn:hover{
+	border-color: var(--primary-lightend);
+}
+
+.btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
 }
 
 .btn-primary {
@@ -44,4 +55,8 @@ textarea,
 .btn-secondary {
 	border: 1px solid var(--primary);
 	color: var(--primary);
+}
+
+.btn-tertiary {
+	color: var(--primary)
 }
