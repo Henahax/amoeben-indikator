@@ -21,6 +21,7 @@ label {
 
 textarea {
 	field-sizing: content;
+	min-height: 8rem;
 }
 
 input,

@@ -70,7 +70,7 @@
 	</div>
 	<div class="flex flex-col gap-8">
 		<div class="flex justify-center">
-			<a href="new" class="btn">Neuer Eintrag</a>
+			<a href="new" class="btn btn-primary">Neuer Eintrag</a>
 		</div>
 
 		<div
