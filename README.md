@@ -1,38 +1,40 @@
-# sv
+# pages
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## layout (all pages)
 
-## Creating a project
+not logged in:
 
-If you're seeing this, you've probably already done this step. Congrats!
+- login
+- register
 
-```bash
-# create a new project in the current directory
-npx sv create
+logged in:
 
-# create a new project in my-app
-npx sv create my-app
-```
+- logout
+- admin (logged in as admin)
 
-## Developing
+## index
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- new
 
-```bash
-npm run dev
+## register
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+- redirects to index if logged in
+- redirects to index after registration
 
-## Building
+## login
 
-To create a production version of your app:
+- redirects to index if logged in
+- redirects to previous page after login
 
-```bash
-npm run build
-```
+## new
 
-You can preview the production build with `npm run preview`.
+- redirects to login if not logged in
+- redirects to index after sending entry
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## admin
+
+- redirects to login if not logged in
+
+## api
+
+- json of current scrore
