@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { scales, users, entries } from "./schema";
+import { scales, users, entries, roles } from "./schema";
 
 // Load environment variables from .env file
 config();
@@ -52,15 +52,27 @@ const seedScales = [
     }
 ];
 
-const seedUsers = [{
+const seedRoles = [{
     id: 1,
-    username: "Henahax",
-    passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE"
+    name: "Administrator",
+    icon: "fa-solid fa-user-tie"
 },
 {
     id: 2,
-    username: "Waetsch",
-    passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$z+sIUY0Ywj3SMwhVIOd3KA$uI5Am3k5LPdUBa3jarYysm1NvYMox0hYObqfmNTig1g"
+    name: "Mitglied",
+    icon: "fa-solid fa-check"
+},
+{
+    id: 3,
+    name: "unverifiziert",
+    icon: "fa-solid fa-xmark"
+}];
+
+const seedUsers = [{
+    id: 1,
+    username: "Henahax",
+    passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE",
+    role: 1
 }];
 
 const seedEntries = [{
@@ -71,7 +83,7 @@ const seedEntries = [{
     comment: "Kaffee verschüttet"
 }, {
     id: 2,
-    userId: 2,
+    userId: 1,
     scaleId: 2,
     date: new Date("2024-12-10T16:22:40Z"),
     comment: "Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch"
@@ -89,6 +101,17 @@ const main = async () => {
                     set: scale
                 });
             console.log(`Processed scale: ${scale.name}`);
+        }
+
+        for (const role of seedRoles) {
+            await db
+                .insert(roles)
+                .values(role)
+                .onConflictDoUpdate({
+                    target: roles.id,
+                    set: role
+                });
+            console.log(`Processed user: ${role.name}`);
         }
 
         for (const user of seedUsers) {

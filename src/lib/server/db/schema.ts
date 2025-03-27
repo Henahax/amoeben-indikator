@@ -4,7 +4,14 @@ import { sql } from "drizzle-orm";
 export const users = pgTable('users', {
 	id: serial('id').primaryKey().notNull(),
 	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull()
+	passwordHash: text('password_hash').notNull(),
+	roleId: integer('role_id').notNull().references(() => roles.id).default(1)
+});
+
+export const roles = pgTable('roles', {
+	id: serial('id').primaryKey().notNull(),
+	name: text('name').notNull().unique(),
+	icon: text('icon').notNull()
 });
 
 export const sessions = pgTable('sessions', {
@@ -36,10 +43,12 @@ export const entries = pgTable('entries', {
 
 export type Session = typeof sessions.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type Role = typeof roles.$inferSelect;
 export type Scale = typeof scales.$inferSelect;
 export type Entry = typeof entries.$inferSelect;
 
 export type SessionInsert = typeof sessions.$inferInsert;
+export type RoleInsert = typeof roles.$inferInsert;
 export type UserInsert = typeof users.$inferInsert;
 export type ScaleInsert = typeof scales.$inferInsert;
 export type EntryInsert = typeof entries.$inferInsert;

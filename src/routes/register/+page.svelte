@@ -7,11 +7,11 @@
 
 <form
 	method="post"
-	action="?/login"
+	action="?/register"
 	use:enhance
 	class="mx-auto flex w-full max-w-sm flex-col gap-4"
 >
-	<h2 class="mx-auto text-xl">Login</h2>
+	<h2 class="mx-auto text-xl">Registrieren</h2>
 	<div class="flex flex-col">
 		<label for="username">Benutzername</label>
 		<input id="username" name="username" type="text" placeholder="Benutzername" />

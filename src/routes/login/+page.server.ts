@@ -1,19 +1,12 @@
-import { hash, verify } from '@node-rs/argon2';
-import { encodeBase32LowerCase } from '@oslojs/encoding';
+import { verify } from '@node-rs/argon2';
 import { fail, redirect } from '@sveltejs/kit';
-import { eq, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db/db';
 import { users } from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (event) => {
-    if (event.locals.user) {
-        return redirect(302, '/new');
-    }
 
-    return {};
-};
 
 export const actions: Actions = {
     login: async (event) => {
@@ -49,56 +42,13 @@ export const actions: Actions = {
             return fail(400, { message: 'Incorrect username or password' });
         }
 
-        console.log('User logged in:', existingUser.username);
-
         const sessionToken = auth.generateSessionToken();
         const session = await auth.createSession(sessionToken, existingUser.id);
         auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-        console.log('User logged in:', existingUser.username);
-
-        return redirect(302, '/new');
-    },
-    register: async (event) => {
-        const formData = await event.request.formData();
-        const username = formData.get('username');
-        const password = formData.get('password');
-
-        if (!validateUsername(username)) {
-            return fail(400, { message: 'Invalid username' });
-        }
-        if (!validatePassword(password)) {
-            return fail(400, { message: 'Invalid password' });
-        }
-
-        const userId = generateUserId();
-        const passwordHash = await hash(password, {
-            // recommended minimum parameters
-            memoryCost: 19456,
-            timeCost: 2,
-            outputLen: 32,
-            parallelism: 1
-        });
-
-        try {
-            await db.insert(users).values({ id: userId, username, passwordHash });
-
-            const sessionToken = auth.generateSessionToken();
-            const session = await auth.createSession(sessionToken, userId);
-            auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-        } catch (e) {
-            return fail(500, { message: 'An error has occurred' });
-        }
-        return redirect(302, '/new');
+        return redirect(302, '/');
     }
 };
-
-function generateUserId() {
-    // ID with 120 bits of entropy, or about the same as UUID v4.
-    const bytes = crypto.getRandomValues(new Uint8Array(15));
-    const id = encodeBase32LowerCase(bytes);
-    return id;
-}
 
 function validateUsername(username: unknown): username is string {
     return (

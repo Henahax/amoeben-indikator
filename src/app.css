@@ -31,14 +31,17 @@ textarea,
 	border-radius: var(--border-radius);
 }
 
+button {
+	cursor: pointer;
+}
+
 .btn {
 	border-color: var(--primary);
 	width: fit-content;
-	cursor: pointer;
 	padding: 0.5rem 1rem;
 }
 
-.btn:hover{
+.btn:hover {
 	border-color: var(--primary-lightend);
 }
 
@@ -58,5 +61,5 @@ textarea,
 }
 
 .btn-tertiary {
-	color: var(--primary)
+	color: var(--primary);
 }
