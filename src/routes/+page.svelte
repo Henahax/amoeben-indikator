@@ -61,7 +61,7 @@
 								: 'text-neutral-700'}"
 						>
 							<i class={scale.icon}></i>
-							<p class="text-base max-sm:hidden">{scale.name}</p>
+							<p class="text-xl max-sm:hidden">{scale.name}</p>
 						</div>
 					{/each}
 				</div>
@@ -82,15 +82,15 @@
 				<div class="col-span-3 grid grid-cols-subgrid items-center py-4">
 					<div>
 						<div class="text-lg">{entry.users.username}</div>
-						<div class="text-xs">{formatDate(entry.entries.date)}</div>
+						<div class="text-sm">{formatDate(entry.entries.date)}</div>
 					</div>
-					<figure class="text-center text-2xl">
+					<div class="text-center text-2xl">
 						<i class={entry.scales.icon}></i>
-						<figcaption class="text-xs">{entry.scales.name}</figcaption>
-					</figure>
-					<p>
+						<div class="text-sm">{entry.scales.name}</div>
+					</div>
+					<div>
 						{entry.entries.comment}
-					</p>
+					</div>
 				</div>
 			{/each}
 		</div>
