@@ -1,6 +1,6 @@
 # pages
 
-## layout (all pages)
+## layout (all pages other than api)
 
 not logged in:
 
