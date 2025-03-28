@@ -6,10 +6,16 @@ import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-    if (!event.locals.user || event.locals.user.roleId !== 1) {
+
+    if (!event.locals.user) {
         return redirect(302, '/login');
     }
 
+    const myUser = await db.select().from(users).leftJoin(roles, eq(roles.id, users.roleId)).where(eq(users.id, event.locals.user.id)).limit(1);
+
+    if (myUser[0].users.roleId !== 1) {
+        return redirect(302, '/');
+    }
 
     const myUsers = await db.select().from(users).leftJoin(roles, eq(roles.id, users.roleId)).orderBy(users.id);
     const myEntries = await db.select().from(entries).leftJoin(scales, eq(scales.id, entries.scaleId)).leftJoin(users, eq(users.id, entries.userId)).orderBy(desc(entries.date));

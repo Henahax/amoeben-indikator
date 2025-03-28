@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import { enhance } from '$app/forms';
 	let { children, data } = $props();
 
 	let menuOpen = $state(false);
@@ -46,16 +47,33 @@
 				Henahax
 			</div>
 
-			<div class="flex items-center gap-2 text-sm">
-				<i class="fa-solid fa-check"></i>Verifiziert
-			</div>
-			<div class="flex items-center gap-2 text-sm">
-				<i class="fa-solid fa-user-tie"></i>Administrator
-			</div>
-			<button class="btn btn-tertiary">
-				<i class="fa-solid fa-right-from-bracket"></i>
-				logout
-			</button>
+			{#if data.user.users.roleId === 1}
+				<a href="/admin" class="flex items-center gap-2 text-sm">
+					<i class={data.user.roles.icon}></i>{data.user.roles.name}
+				</a>
+			{:else if data.user.users.roleId === 2}
+				<div class="flex items-center gap-2 text-xs">
+					<i class={data.user.roles.icon}></i>{data.user.roles.name}
+				</div>
+			{:else}
+				<div></div>
+			{/if}
+
+			<form
+				action="?/logout"
+				use:enhance={() => {
+					return ({ result }) => {
+						if (result.data?.location) {
+							window.location.href = result.data.location;
+						}
+					};
+				}}
+			>
+				<button class="btn btn-tertiary">
+					<i class="fa-solid fa-right-from-bracket"></i>
+					logout
+				</button>
+			</form>
 		</div>
 	{/if}
 
@@ -66,6 +84,14 @@
 			{@render children()}
 		</div>
 	</main>
+	<footer class="flex items-center p-2">
+		<div class="grow text-center text-sm">© henahax.de</div>
+		<div class="text-2xl">
+			<a href="https://github.com/Henahax/amoeben-indikator" target="_blank" aria-label="GitHub">
+				<i class="fa-brands fa-github"></i>
+			</a>
+		</div>
+	</footer>
 </app>
 
 <style>
