@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: Holz1337
+      POSTGRES_DB: amoeben-indikator
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+  admin:
+    image: dpage/pgadmin4
+    container_name: admin
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: mail@henahax.de
+      PGADMIN_DEFAULT_PASSWORD: Holz1337
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+volumes:
+  local_pgdata:
+  pgadmin-data:

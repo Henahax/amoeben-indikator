@@ -21,8 +21,12 @@
 		<input id="password" name="password" type="password" placeholder="Passwort" />
 	</div>
 	<div class="flex flex-col items-center gap-2">
-		<button class="btn btn-primary w-full">Anmelden</button>
-		<button formaction="?/register" class="btn btn-secondary w-full">Registrieren</button>
+		<button class="btn btn-primary"><i class="fa-solid fa-arrow-right-to-bracket"></i>Login</button>
 	</div>
-	<p style="color: red">{form?.message ?? ''}</p>
+
+	<div class="flex flex-col items-center">
+		<p class="text-sm">Noch kein Konto?</p>
+		<a href="/register" class="btn btn-link">Registrieren</a>
+	</div>
+	<p class="text-center text-red-500">{form?.message ?? ''}</p>
 </form>

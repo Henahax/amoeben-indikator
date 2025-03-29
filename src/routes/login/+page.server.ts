@@ -4,23 +4,15 @@ import { sql } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db/db';
 import { users } from '$lib/server/db/schema';
-import type { Actions, PageServerLoad } from './$types';
-
-
+import type { Actions } from './$types';
 
 export const actions: Actions = {
     login: async (event) => {
         const formData = await event.request.formData();
         const username = formData.get('username');
         const password = formData.get('password');
-
-        if (!validateUsername(username)) {
-            return fail(400, {
-                message: 'Invalid username (min 3, max 31 characters, alphanumeric only)'
-            });
-        }
-        if (!validatePassword(password)) {
-            return fail(400, { message: 'Invalid password (min 6, max 255 characters)' });
+        if (!password || typeof password !== 'string') {
+            return fail(400, { message: 'Password is required' });
         }
 
         const results = await db.select()
@@ -49,16 +41,3 @@ export const actions: Actions = {
         return redirect(302, '/');
     }
 };
-
-function validateUsername(username: unknown): username is string {
-    return (
-        typeof username === 'string' &&
-        username.length >= 3 &&
-        username.length <= 31 &&
-        /^[a-zA-Z0-9_-]+$/.test(username)
-    );
-}
-
-function validatePassword(password: unknown): password is string {
-    return typeof password === 'string' && password.length >= 6 && password.length <= 255;
-}

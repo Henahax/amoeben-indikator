@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { scale } from 'svelte/transition';
-
 	let { data }: { data: any } = $props();
 
 	let score = $derived(getScore(data.entries));
-
 	let highest = $derived(highestReached(data.scales, score));
 
 	function formatDate(dateStr: string): string {
@@ -33,58 +30,66 @@
 	}
 
 	function highestReached(scales: any, score: number) {
-		let highest = 0;
+		let highest = 1;
 
 		if (!scales || scales.length === 0) return 0;
 
+		let iterator = 0;
 		scales.forEach((scale: any) => {
-			if (score >= scale.value) {
+			if (iterator !== 0 && score >= iterator * (1 / scales.length)) {
 				highest = scale.id;
 			}
+			iterator++;
 		});
 
 		return highest;
 	}
 </script>
 
-<div class="flex flex-col gap-32">
-	<div class="flex flex-col text-center">
-		<div class="flex flex-col">
-			<div class="flex flex-col gap-2">
-				<div class="grid w-full grid-cols-[auto_auto_auto_auto_auto_auto] justify-between">
-					{#each data.scales as scale}
-						<div
-							class="flex flex-col items-center text-3xl {highest === scale.id
-								? 'text-white-500 animate-pulse'
-								: 'text-neutral-700'}"
-						>
-							<i class={scale.icon}></i>
-							<p class="text-xl max-sm:hidden">{scale.name}</p>
-						</div>
-					{/each}
-				</div>
-
-				<progress value={score} class="w-full"></progress>
+<div class="flex flex-col gap-16">
+	<div class="flex flex-col">
+		<h1 class="py-8 text-center text-4xl font-semibold">Amöben-Indikator</h1>
+		<div class="flex flex-col gap-2 py-8">
+			<div class="grid w-full grid-cols-[auto_auto_auto_auto_auto_auto] justify-between">
+				{#each data.scales as scale, iterator}
+					<div
+						class="flex flex-col items-center text-3xl font-semibold {highest === scale.id
+							? 'primary'
+							: 'text-neutral-300'}"
+						title={'≥' + iterator * (1 / data.scales.length)}
+					>
+						<i class={scale.icon}></i>
+						<p class="text-base max-sm:hidden">{scale.name}</p>
+					</div>
+				{/each}
 			</div>
+
+			<progress value={score} max="1" class="w-full" title={score.toString()}></progress>
 		</div>
 	</div>
 	<div class="flex flex-col gap-8">
-		<div class="flex justify-center">
-			<a href="new" class="btn btn-primary">Neuer Eintrag</a>
-		</div>
+		{#if data.user && data.user.users.roleId !== 3}
+			<a href="new" class="btn btn-primary self-center"
+				><i class="fa-solid fa-plus"></i>Neuer Eintrag</a
+			>
+		{:else}
+			<button class="btn btn-primary self-center" title="Bitte verifizieren lassen" disabled
+				><i class="fa-solid fa-plus"></i>Neuer Eintrag</button
+			>
+		{/if}
 
 		<div
-			class="mx-auto grid w-fit grid-cols-[auto_auto_1fr] items-center gap-x-6 divide-y divide-neutral-500"
+			class="mx-auto grid w-fit grid-cols-[auto_auto_1fr] items-center gap-x-4 divide-y sm:gap-x-6"
 		>
 			{#each data.entries as entry}
 				<div class="col-span-3 grid grid-cols-subgrid items-center py-4">
 					<div>
 						<div class="text-lg">{entry.users.username}</div>
-						<div class="text-sm">{formatDate(entry.entries.date)}</div>
+						<div class="text-xs">{formatDate(entry.entries.date)}</div>
 					</div>
-					<div class="text-center text-2xl">
+					<div class="primary text-center text-2xl">
 						<i class={entry.scales.icon}></i>
-						<div class="text-sm">{entry.scales.name}</div>
+						<div class="text-xs">{entry.scales.name}</div>
 					</div>
 					<div>
 						{entry.entries.comment}
@@ -94,3 +99,24 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	h1 {
+		color: var(--primary);
+	}
+
+	.primary {
+		color: var(--primary);
+	}
+
+	progress[value]::-webkit-progress-bar {
+		border-radius: 1rem;
+		background-color: rgba(0, 0, 0, 0.25);
+	}
+
+	progress[value]::-webkit-progress-value {
+		border-radius: 1rem;
+
+		background-color: var(--primary);
+	}
+</style>

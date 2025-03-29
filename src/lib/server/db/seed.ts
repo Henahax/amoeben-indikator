@@ -47,7 +47,7 @@ const seedScales = [
     {
         id: 6,
         name: "Mensch",
-        value: 0.8,
+        value: 1,
         icon: "fa-solid fa-person"
     }
 ];
@@ -64,7 +64,7 @@ const seedRoles = [{
 },
 {
     id: 3,
-    name: "unverifiziert",
+    name: "nicht verifiziert",
     icon: "fa-solid fa-xmark"
 }];
 
@@ -72,7 +72,7 @@ const seedUsers = [{
     id: 1,
     username: "Henahax",
     passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE",
-    role: 1
+    roleId: 1
 }];
 
 const seedEntries = [{

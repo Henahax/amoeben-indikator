@@ -1,27 +1,18 @@
+version: '2.1'
 services:
-  db:
-    image: postgres
-    container_name: db
-    restart: always
-    ports:
-      - 5432:5432
+  nginx:
+    image: henahax/amoeben-indikator:latest
+    container_name: amoeben-indikator
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: Holz1337
-      POSTGRES_DB: amoeben-indikator
-    volumes:
-      - local_pgdata:/var/lib/postgresql/data
-  admin:
-    image: dpage/pgadmin4
-    container_name: admin
-    restart: always
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - DATABASE_URL=/data/local.db
     ports:
-      - "8888:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: mail@henahax.de
-      PGADMIN_DEFAULT_PASSWORD: Holz1337
+      - 8080:3000
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - db-data:/data
+    restart: unless-stopped
+
 volumes:
-  local_pgdata:
-  pgadmin-data:
+  db-data:

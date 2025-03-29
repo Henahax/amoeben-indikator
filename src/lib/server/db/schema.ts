@@ -5,7 +5,7 @@ export const users = pgTable('users', {
 	id: serial('id').primaryKey().notNull(),
 	username: text('username').notNull().unique(),
 	passwordHash: text('password_hash').notNull(),
-	roleId: integer('role_id').notNull().references(() => roles.id).default(1)
+	roleId: integer('role_id').notNull().references(() => roles.id).default(3)
 });
 
 export const roles = pgTable('roles', {

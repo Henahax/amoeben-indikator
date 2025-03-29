@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @import 'tailwindcss';
 @import '../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
+
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
@@ -9,10 +11,14 @@
 	--foreground-muted: var(--color-neutral-500);
 	--card: var(--color-neutral-900);
 
-	--primary: var(--color-indigo-800);
-	--primary-lightend: var(--color-indigo-700);
+	--primary: #283d67;
+	--primary-dark: #1e2e4d;
+	--primary-light: #4265b2;
 
 	--border-radius: 0.5rem;
+
+	font-size: 1rem;
+	font-family: 'Noto Sans', sans-serif;
 }
 
 label {
@@ -31,23 +37,34 @@ textarea,
 	border-radius: var(--border-radius);
 }
 
+input:disabled,
+select:disabled,
+textarea:disabled,
+.btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
 button {
 	cursor: pointer;
 }
 
 .btn {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
 	border-color: var(--primary);
-	width: fit-content;
 	padding: 0.5rem 1rem;
+	cursor: pointer;
+	justify-content: center;
 }
 
 .btn:hover {
-	border-color: var(--primary-lightend);
+	border-color: var(--primary-light);
 }
 
-.btn:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
+.btn-small {
+	font-size: small;
 }
 
 .btn-primary {
@@ -55,11 +72,43 @@ button {
 	color: white;
 }
 
+.btn-primary:hover {
+	background-color: var(--primary-dark);
+}
+
 .btn-secondary {
-	border: 1px solid var(--primary);
+	background-color: white;
+	color: var(--primary);
+	border-color: var(--primary);
+	border-width: 1px;
+}
+
+.btn-secondary:hover {
+	color: var(--primary-light);
+	border-color: var(--primary-light);
+}
+
+.btn-link {
 	color: var(--primary);
 }
 
-.btn-tertiary {
-	color: var(--primary);
+.btn-link:hover {
+	color: var(--primary-light);
+	text-decoration: underline;
+}
+
+.btn-destructive {
+	color: white;
+	background-color: var(--color-red-600);
+}
+
+.btn-destructive:hover {
+	color: var(--color-neutral-100);
+	background-color: var(--color-red-700);
+}
+
+.btn-icon {
+	padding: 0;
+	height: 1.75rem;
+	width: 1.75rem;
 }

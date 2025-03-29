@@ -1,5 +1,5 @@
 import { hash } from '@node-rs/argon2';
-import { encodeBase32LowerCase } from '@oslojs/encoding';
+// import { encodeBase32LowerCase } from '@oslojs/encoding';
 import { fail, redirect } from '@sveltejs/kit';
 import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db/db';
@@ -8,7 +8,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
     if (event.locals.user) {
-        return redirect(302, '/new');
+        return redirect(302, '/');
     }
 
     return {};
@@ -21,13 +21,14 @@ export const actions: Actions = {
         const password = formData.get('password');
 
         if (!validateUsername(username)) {
-            return fail(400, { message: 'Invalid username' });
+            return fail(400, { message: 'Ungültiger Benutzername' });
         }
         if (!validatePassword(password)) {
-            return fail(400, { message: 'Invalid password' });
+            return fail(400, { message: 'Ungültiges Passwort' });
         }
 
-        const userId = generateUserId();
+        // const userId = generateUserId();
+
         const passwordHash = await hash(password, {
             // recommended minimum parameters
             memoryCost: 19456,
@@ -37,24 +38,26 @@ export const actions: Actions = {
         });
 
         try {
-            await db.insert(users).values({ id: userId, username, passwordHash });
+            const result = await db.insert(users).values({ username, passwordHash }).returning();
 
             const sessionToken = auth.generateSessionToken();
-            const session = await auth.createSession(sessionToken, userId);
+            const session = await auth.createSession(sessionToken, result[0].id);
             auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
         } catch (e) {
-            return fail(500, { message: 'An error has occurred' });
+            return fail(500, { message: 'Das Konto existiert bereits' });
         }
-        return redirect(302, '/new');
+        return redirect(302, '/');
     }
 };
 
+/*
 function generateUserId() {
     // ID with 120 bits of entropy, or about the same as UUID v4.
     const bytes = crypto.getRandomValues(new Uint8Array(15));
     const id = encodeBase32LowerCase(bytes);
     return id;
 }
+*/
 
 function validateUsername(username: unknown): username is string {
     return (
@@ -66,5 +69,5 @@ function validateUsername(username: unknown): username is string {
 }
 
 function validatePassword(password: unknown): password is string {
-    return typeof password === 'string' && password.length >= 6 && password.length <= 255;
+    return typeof password === 'string' && password.length >= 4 && password.length <= 255;
 }
