@@ -1,20 +1,8 @@
 FROM node:latest
-
 WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci
-
 COPY . .
-
-RUN mkdir -p /data && \
-    chown -R node:node /data && \
-    chown -R node:node /app
-
-USER node
-
+RUN npm ci
 RUN npm run build
-
-EXPOSE 5173
-
-CMD ["node", "build"]
+RUN rm -rf src/ static/ emailTemplates/ docker-compose.yml
+USER node:node
+CMD ["node","build/index.js"]

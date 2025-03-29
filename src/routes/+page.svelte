@@ -64,7 +64,8 @@
 				{/each}
 			</div>
 
-			<progress value={score} max="1" class="w-full" title={score.toString()}></progress>
+			<progress value={score} max="1" class="w-full px-2 sm:px-6" title={score.toString()}
+			></progress>
 		</div>
 	</div>
 	<div class="flex flex-col gap-8">

@@ -44,6 +44,7 @@ export const actions: Actions = {
     },
 
     deleteUser: async ({ request }) => {
+        console.log("test");
         const formData = await request.formData();
         const userId = Number(formData.get('userId'));
 

@@ -25,6 +25,7 @@
 	}
 
 	function confirmDelete(event: Event, type: 'user' | 'entry') {
+		console.log('sweg');
 		const message =
 			type === 'user'
 				? 'Möchten Sie diesen Benutzer wirklich löschen?'
@@ -58,7 +59,7 @@
 					{/each}
 				</select>
 				{#if data.user.users.id !== user.users.id}
-					<form action="?/deleteUser" onsubmit={(e) => confirmDelete(e, 'user')}>
+					<form action="?/deleteUser" method="POST" onsubmit={(e) => confirmDelete(e, 'user')}>
 						<input type="hidden" name="userId" value={user.users.id} />
 						<button class="hover:text-neutral-500" aria-label="löschen" type="submit">
 							<i class="fa-solid fa-trash-can"></i>
