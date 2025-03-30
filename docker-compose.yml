@@ -8,11 +8,9 @@ services:
       - PGID=1000
       - TZ=Europe/Berlin
       - PORT=3000
-      - NODE_ENV=production
-      - ORIGIN=https://your-domain.com
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - DATABASE_URL=postgres://root:Holz1337@localhost:5432/amoeben-indikator
       - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_PASSWORD=Holz1337
       - POSTGRES_DB=amoeben-indikator
     ports:
       - 8080:3000
@@ -25,7 +23,7 @@ services:
     container_name: amoeben-indikator-db
     environment:
       - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_PASSWORD=Holz1337
       - POSTGRES_DB=amoeben-indikator
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
