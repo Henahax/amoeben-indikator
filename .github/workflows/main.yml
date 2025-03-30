@@ -10,21 +10,27 @@ on:
 jobs:
   Docker:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: latest
 
-      - name: setup git config
+      - name: Setup git config
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "${{ secrets.EMAIL }}"
 
-      - name: Dependecies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build application
         run: npm run build
 
       - name: Save version
@@ -37,11 +43,17 @@ jobs:
       - name: Push new version
         run: git push
 
-      - name: Login to DockerHub Registry
+      - name: Login to DockerHub
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag henahax/amoeben-indikator:latest
+        run: |
+          docker build . \
+            --file Dockerfile \
+            --tag henahax/amoeben-indikator:latest \
+            --tag henahax/amoeben-indikator:${{ steps.version.outputs.tag }}
 
       - name: Push to Docker Hub
-        run: docker push henahax/amoeben-indikator:latest
+        run: |
+          docker push henahax/amoeben-indikator:latest
+          docker push henahax/amoeben-indikator:${{ steps.version.outputs.tag }}

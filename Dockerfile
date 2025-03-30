@@ -1,8 +1,19 @@
 FROM node:latest
+
+# Install netcat for database connection checking
+RUN apt-get update && apt-get install -y netcat-traditional && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 COPY . .
 RUN npm ci
 RUN npm run build
-RUN rm -rf src/ static/ emailTemplates/ docker-compose.yml
+
+# Keep necessary files for database operations
+RUN rm -rf src/ static/
+
+# Make entrypoint executable
+COPY docker-entrypoint.sh .
+RUN chmod +x docker-entrypoint.sh
+
 USER node:node
-CMD ["node","build/index.js"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
