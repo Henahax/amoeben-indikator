@@ -1,63 +1,62 @@
-import { db } from '$lib/server/db';
-import { scales, users, entries, type EntriesInsert } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
-import * as argon2 from '@node-rs/argon2';
+import type { Actions, PageServerLoad } from './$types';
+import { db } from "$lib/server/db/db";
+import { scales, users, roles, entries } from "$lib/server/db/schema";
+import { eq } from "drizzle-orm";
 
-let myScales = await db.select().from(scales).orderBy(scales.value);
-let myUsers = await db.select().from(users);
 
-export const load = async () => {
+export const load: PageServerLoad = async (event) => {
+    if (!event.locals.user) {
+        return redirect(302, '/login');
+    }
+
+    const myUser = await db.select().from(users).leftJoin(roles, eq(roles.id, users.roleId)).where(eq(users.id, event.locals.user.id)).limit(1);
+
+    if (myUser[0].users.roleId === 3) {
+        return redirect(302, '/');
+    }
+
+    const myScales = await db.select().from(scales).orderBy(scales.value);
+
     return {
-        scales: myScales,
-        users: myUsers
+        user: event.locals.user,
+        scales: myScales
     };
 };
 
-export const actions = {
-    default: async ({ request }) => {
+export const actions: Actions = {
+    new: async (event) => {
 
-        let data = await request.formData();
+        const formData = await event.request.formData();
+        const scaleId = formData.get('value');
+        const comment = formData.get('comment');
 
-        let userId = Number(data.get("user"));
-        let scaleId = Number(data.get("scale"));
-        let comment = data.get("description")?.toString();
-        let password = data.get("password")?.toString();
-
-        let test = "supergeheim";
-        let test2 = await argon2.hash(test);
-        console.log(test2);
-
-        if (userId < 1) {
-            return fail(400, { userId, userInvalid: true, scaleId, description: comment });
+        if (!event.locals.user) {
+            return fail(500, { message: 'Ein Fehler ist aufgetreten 1' });
         }
 
-        if (scaleId < 1) {
-            return fail(400, { scaleId, scaleInvalid: true, userId, description: comment });
+        const myUser = await db.select().from(users).leftJoin(roles, eq(roles.id, users.roleId)).where(eq(users.id, event.locals.user.id)).limit(1);
+
+        if (myUser[0].users.roleId === 3 || Number(scaleId) === 0) {
+            return fail(500, { message: 'Ein Fehler ist aufgetreten 2' });
         }
 
-        if (!comment || comment.length < 1) {
-            return fail(400, { description: comment, descriptionInvalid: true, userId, scaleId });
+        if (!comment || comment.toString().length < 1) {
+            return fail(500, { message: 'Kommentar benötigt 3' });
         }
 
-        if (!password || password.length < 1) {
-            return fail(400, { password, passwordInvalid: true, userId, scaleId, description: comment });
-        }
-
-        const user = myUsers.find(user => Number(user.id) === userId);
+        let response;
 
         try {
-            if (!user || !(await argon2.verify(user.passwordHash, password))) {
-                return fail(400, { password, passwordInvalid: true, userId, scaleId, description: comment });
-            }
-        } catch (error) {
-            console.error('Password verification error:', error);
-            return fail(400, { password, passwordInvalid: true, userId, scaleId, description: comment });
+            response = await db.insert(entries).values({
+                userId: myUser[0].users.id,
+                scaleId: Number(scaleId),
+                comment: comment.toString()
+            });
+        } catch (e) {
+            console.log(response);
+            return fail(500, { message: 'Ein Fehler ist aufgetreten 4' });
         }
-
-        const entry: EntriesInsert = { userId: userId, scaleId: scaleId, timestamp: new Date().toISOString(), comment: comment };
-
-        await db.insert(entries).values(entry);
-
-        redirect(303, "/");
+        return redirect(302, '/');
     }
-}
+};

@@ -1,18 +1,42 @@
-version: '2.1'
+version: '3.8'
 services:
-  nginx:
+  app:
     image: henahax/amoeben-indikator:latest
     container_name: amoeben-indikator
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - DATABASE_URL=/data/local.db
+      - PORT=3000
+      - NODE_ENV=production
+      - ORIGIN=https://your-domain.com
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=amoeben-indikator
     ports:
       - 8080:3000
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:latest
+    container_name: amoeben-indikator-db
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=amoeben-indikator
+      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - db-data:/data
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d amoeben-indikator" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
 volumes:
-  db-data:
+  postgres-data:
+    name: amoeben-indikator-data

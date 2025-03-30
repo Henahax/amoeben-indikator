@@ -1,116 +1,123 @@
 <script lang="ts">
-	let { data } = $props();
+	let { data }: { data: any } = $props();
 
-	let score = $derived(getScore(data));
+	let score = $derived(getScore(data.entries));
+	let highest = $derived(highestReached(data.scales, score));
 
-	let highestReached = $derived(getHighestReached(data, score));
-
-	function getHighestReached(data: any, score: number) {
-		let highest: { id: string; value: number } | undefined;
-
-		data.scales.forEach((scale: any) => {
-			if (score >= scale.value - 0.1) {
-				highest = scale;
-			}
-		});
-
-		if (highest) {
-			return highest.id;
-		}
-
-		return data.scales[0].id;
-	}
-
-	function getScore(data: any) {
-		if (data.entries.length === 0) {
-			return 0;
-		}
-		let totalScore = 0;
-
-		data.entries.forEach((entry: any) => {
-			const scale = data.scales.find((scale: any) => scale.id === entry.entries.scaleId);
-			if (scale) {
-				totalScore += scale.value ?? 0;
-			}
-		});
-
-		return Number((totalScore / data.entries.length).toFixed(2));
-	}
-
-	function formatDate(dateString: string) {
-		const date = new Date(dateString);
+	function formatDate(dateStr: string): string {
+		const date = new Date(dateStr);
 		return date.toLocaleString('de-DE', {
 			day: '2-digit',
 			month: '2-digit',
-			year: 'numeric'
-		});
-	}
-
-	function formatTime(dateString: string) {
-		const date = new Date(dateString);
-		return date.toLocaleString('de-DE', {
+			year: 'numeric',
 			hour: '2-digit',
 			minute: '2-digit'
 		});
 	}
+
+	function getScore(entries: any): number {
+		let score = 0;
+		let count = 0;
+
+		if (!entries || entries.length === 0) return 0;
+
+		entries.forEach((entry: any) => {
+			score += entry.scales.value;
+			count++;
+		});
+
+		return Math.round((score / count) * 100) / 100;
+	}
+
+	function highestReached(scales: any, score: number) {
+		let highest = 1;
+
+		if (!scales || scales.length === 0) return 0;
+
+		let iterator = 0;
+		scales.forEach((scale: any) => {
+			if (iterator !== 0 && score >= iterator * (1 / scales.length)) {
+				highest = scale.id;
+			}
+			iterator++;
+		});
+
+		return highest;
+	}
 </script>
 
-<div class="flex w-full flex-col items-center gap-8">
-	<h1 class="text-4xl">Amöben Indikator</h1>
+<div class="flex flex-col gap-16">
+	<div class="flex flex-col">
+		<h1 class="py-8 text-center text-4xl font-semibold">Amöben-Indikator</h1>
+		<div class="flex flex-col gap-2 py-8">
+			<div class="grid w-full grid-cols-[auto_auto_auto_auto_auto_auto] justify-between">
+				{#each data.scales as scale, iterator}
+					<div
+						class="flex flex-col items-center text-3xl font-semibold {highest === scale.id
+							? 'primary'
+							: 'text-neutral-300'}"
+						title={'≥' + iterator * (1 / data.scales.length)}
+					>
+						<i class={scale.icon}></i>
+						<p class="text-base max-sm:hidden">{scale.name}</p>
+					</div>
+				{/each}
+			</div>
 
-	<section>
-		<div class="flex w-full justify-between">
-			{#each data.scales as scale}
-				<div
-					class="grid grid-cols-1 place-items-center text-3xl {scale.id === highestReached
-						? 'text-green-500'
-						: 'opacity-25'}"
-					title={scale.name}
-				>
-					<i class={scale.icon}></i>
-					<span class="hidden text-lg font-bold sm:block">{scale.name}</span>
-				</div>
-			{/each}
+			<progress value={score} max="1" class="w-full px-2 sm:px-6" title={score.toString()}
+			></progress>
 		</div>
-		<meter
-			id="indicator"
-			class="h-8 w-full"
-			low="0.25"
-			high="0.75"
-			optimum="1"
-			value={score}
-			title={score.toString()}
+	</div>
+	<div class="flex flex-col gap-8">
+		{#if data.user && data.user.users.roleId !== 3}
+			<a href="new" class="btn btn-primary self-center"
+				><i class="fa-solid fa-plus"></i>Neuer Eintrag</a
+			>
+		{:else}
+			<button class="btn btn-primary self-center" title="Bitte verifizieren lassen" disabled
+				><i class="fa-solid fa-plus"></i>Neuer Eintrag</button
+			>
+		{/if}
+
+		<div
+			class="mx-auto grid w-fit grid-cols-[auto_auto_1fr] items-center gap-x-4 divide-y sm:gap-x-6"
 		>
-		</meter>
-	</section>
-
-	<section class="flex flex-col items-center gap-8 p-4">
-		<a href="/demo/lucia/login" class="w-fit underline">Neuer Eintrag</a>
-
-		<div class="grid grid-cols-[auto_auto_1fr] items-center gap-8">
 			{#each data.entries as entry}
-				<div class="flex flex-col items-center justify-center">
-					<span>{entry.users?.username}</span>
-					<div class="inline-flex flex-wrap justify-center gap-x-2">
-						<span>{formatDate(entry.entries.timestamp ?? '')}</span>
-						<span>{formatTime(entry.entries.timestamp ?? '')}</span>
+				<div class="col-span-3 grid grid-cols-subgrid items-center py-4">
+					<div>
+						<div class="text-lg">{entry.users.username}</div>
+						<div class="text-xs">{formatDate(entry.entries.date)}</div>
+					</div>
+					<div class="primary text-center text-2xl">
+						<i class={entry.scales.icon}></i>
+						<div class="text-xs">{entry.scales.name}</div>
+					</div>
+					<div>
+						{entry.entries.comment}
 					</div>
 				</div>
-				<div class="flex flex-col items-center justify-center text-2xl">
-					<i class={data.scales.find((scale) => scale.id === entry.entries.scaleId)?.icon}></i>
-					<span class="text-base"
-						>{data.scales.find((scale) => scale.id === entry.entries.scaleId)?.name}</span
-					>
-				</div>
-
-				<div>{entry.entries.comment}</div>
 			{/each}
 		</div>
-	</section>
+	</div>
 </div>
 
 <style>
-	section {
-		width: 100%;
+	h1 {
+		color: var(--primary);
+	}
+
+	.primary {
+		color: var(--primary);
+	}
+
+	progress[value]::-webkit-progress-bar {
+		border-radius: 1rem;
+		background-color: rgba(0, 0, 0, 0.25);
+	}
+
+	progress[value]::-webkit-progress-value {
+		border-radius: 1rem;
+
+		background-color: var(--primary);
 	}
 </style>

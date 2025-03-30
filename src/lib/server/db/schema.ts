@@ -1,32 +1,54 @@
+import { pgTable, serial, text, real, timestamp, integer } from 'drizzle-orm/pg-core';
 import { sql } from "drizzle-orm";
-import { sqliteTable, int, real, text } from 'drizzle-orm/sqlite-core';
 
-export const users = sqliteTable('users', {
-	id: int('id').primaryKey(),
+export const users = pgTable('users', {
+	id: serial('id').primaryKey().notNull(),
 	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull()
+	passwordHash: text('password_hash').notNull(),
+	roleId: integer('role_id').notNull().references(() => roles.id).default(3)
 });
 
-export const scales = sqliteTable('scales', {
-	id: int('id').primaryKey(),
+export const roles = pgTable('roles', {
+	id: serial('id').primaryKey().notNull(),
 	name: text('name').notNull().unique(),
-	value: real('value').unique(),
 	icon: text('icon').notNull()
 });
 
-export const entries = sqliteTable('entries', {
-	id: int('id').primaryKey(),
-	userId: int('user_id').references(() => users.id),
-	scaleId: int('scale_id').references(() => scales.id),
-	timestamp: text('timestamp').default(sql`(CURRENT_TIMESTAMP)`),
-	comment: text('comment').notNull()
-})
+export const sessions = pgTable('sessions', {
+	id: text('id').primaryKey().notNull(),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => users.id),
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
+});
 
-export type EntriesSelect = typeof entries.$inferSelect
-export type EntriesInsert = typeof entries.$inferInsert
+export const scales = pgTable('scales', {
+	id: serial('id').primaryKey().notNull(),
+	name: text('name').notNull().unique(),
+	value: real('value').notNull(),
+	icon: text('icon').notNull()
+});
 
-export type ScalesSelect = typeof scales.$inferSelect;
-export type ScalesInsert = typeof scales.$inferInsert;
+export const entries = pgTable('entries', {
+	id: serial('id').primaryKey().notNull(),
+	userId: serial('user_id')
+		.notNull()
+		.references(() => users.id),
+	scaleId: serial('scale_id')
+		.notNull()
+		.references(() => scales.id),
+	comment: text('comment').notNull(),
+	date: timestamp('date', { withTimezone: true, mode: 'date' }).notNull().default(sql`now()`)
+});
 
-export type UsersSelect = typeof users.$inferSelect;
-export type UsersInsert = typeof users.$inferInsert;
+export type Session = typeof sessions.$inferSelect;
+export type User = typeof users.$inferSelect;
+export type Role = typeof roles.$inferSelect;
+export type Scale = typeof scales.$inferSelect;
+export type Entry = typeof entries.$inferSelect;
+
+export type SessionInsert = typeof sessions.$inferInsert;
+export type RoleInsert = typeof roles.$inferInsert;
+export type UserInsert = typeof users.$inferInsert;
+export type ScaleInsert = typeof scales.$inferInsert;
+export type EntryInsert = typeof entries.$inferInsert;

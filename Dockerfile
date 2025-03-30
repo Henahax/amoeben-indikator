@@ -1,20 +1,19 @@
-FROM node:20-slim
+FROM node:latest
+
+# Install netcat for database connection checking
+RUN apt-get update && apt-get install -y netcat-traditional && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci
-
 COPY . .
-
-RUN mkdir -p /data && \
-    chown -R node:node /data && \
-    chown -R node:node /app
-
-USER node
-
+RUN npm ci
 RUN npm run build
 
-EXPOSE 3000
+# Keep necessary files for database operations
+RUN rm -rf src/ static/
 
-CMD ["node", "build"]
+# Make entrypoint executable
+COPY docker-entrypoint.sh .
+RUN chmod +x docker-entrypoint.sh
+
+USER node:node
+ENTRYPOINT ["./docker-entrypoint.sh"]

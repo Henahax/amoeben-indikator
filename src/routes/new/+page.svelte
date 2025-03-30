@@ -1,39 +1,28 @@
 <script lang="ts">
-	import type { PageData, ActionData } from './$types';
-	let { data }: { data: PageData } = $props();
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
+
+	let { form, data }: { form: ActionData; data: any } = $props();
 </script>
 
-<form class="card flex w-full max-w-2xl flex-col gap-8 p-6" method="post">
-	<div class="w-full text-xl">Neuer Eintrag</div>
-	<div class="grid w-full grid-cols-[auto_1fr] gap-4">
-		<label for="scale">Bewertung</label>
-		<select id="scale" name="scale">
+<form method="post" action="?/new" use:enhance class="mx-auto flex w-full max-w-sm flex-col gap-4">
+	<h2 class="mx-auto text-xl">Neuer Eintrag</h2>
+	<div class="flex flex-col">
+		<label for="value">Bewertung</label>
+		<select id="value" name="value">
 			{#each data.scales as scale}
-				<option value={scale.id}>{scale.name}</option>
+				<option value={scale.id}>
+					{scale.name}
+				</option>
 			{/each}
 		</select>
-
+	</div>
+	<div class="flex flex-col">
 		<label for="comment">Kommentar</label>
-		<textarea id="comment" name="description" class="min-h-32"></textarea>
-
-		<label for="user">Benutzer</label>
-		<select id="user" name="user">
-			{#each data.users as user}
-				<option value={user.id}>{user.username}</option>
-			{/each}
-		</select>
-
-		<label for="password">Passwort</label>
-		<input type="password" id="password" name="password" />
+		<textarea id="comment" name="comment" placeholder="Kommentar"></textarea>
 	</div>
-	<div class="flex w-full gap-4">
-		<button type="submit" class="button button-primary grow">Eintragen</button>
-		<a href="/" class="button button-secondary">Abbrechen</a>
-	</div>
+
+	<button class="btn btn-primary self-center"><i class="fa-solid fa-paper-plane"></i>Senden</button>
+
+	<p class="text-center text-red-500">{form?.message ?? ''}</p>
 </form>
-
-<style>
-	label {
-		color: var(--color-neutral-500);
-	}
-</style>
