@@ -21,11 +21,13 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "${{ secrets.EMAIL }}"
 
-      - name: Dependecies
+      - name: Install Dependencies
         run: npm ci
 
       - name: Build
-        run: SKIP_DB=true npm run build
+        env:
+          SKIP_DB: true
+        run: npm run build
 
       - name: Save version
         id: version
