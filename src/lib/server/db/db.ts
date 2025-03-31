@@ -11,8 +11,12 @@ if (!building && !process.env.SKIP_DB) {
     const client = postgres(env.DATABASE_URL);
     db = drizzle(client, { schema });
 } else {
-    // Provide a mock or fallback `db` object to avoid null references
-    db = drizzle(postgres('postgresql://dummy'), { schema });
+    // Provide a mock `db` object that doesn't connect to a real database
+    const mockClient = {
+        query: async () => [],
+        end: async () => { },
+    } as unknown as ReturnType<typeof postgres>;
+    db = drizzle(mockClient, { schema });
 }
 
 export { db };
