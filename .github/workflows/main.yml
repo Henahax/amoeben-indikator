@@ -25,9 +25,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
-        env:
-          DATABASE_URL: postgres://root:Holz1337@localhost:5432/amoeben-indikator
+        run: SKIP_DB=true npm run build
 
       - name: Save version
         id: version
