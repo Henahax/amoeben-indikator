@@ -26,6 +26,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          DATABASE_URL: postgres://root:Holz1337@localhost:5432/amoeben-indikator
 
       - name: Save version
         id: version
