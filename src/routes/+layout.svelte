@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import { enhance } from '$app/forms';
 	let { children, data } = $props();
 
 	let menuOpen = $state(false);
@@ -29,7 +28,7 @@
 			</a>
 			<div>
 				{#if data.user}
-					<button class="user-avatar" onclick={handleMenuOpen}
+					<button class="user-avatar size-10 rounded-full" onclick={handleMenuOpen}
 						>{data.user.users.username.substring(0, 1).toUpperCase()}
 					</button>
 					<div class="relative">
@@ -114,13 +113,7 @@
 	}
 
 	.user-avatar {
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		background-color: var(--primary-light);
-		border-radius: 100%;
-		width: 2.5rem;
-		height: 2.5rem;
 	}
 
 	#github:hover {
