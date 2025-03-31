@@ -26,49 +26,44 @@
 				<i class="fa-solid fa-bacterium"></i>
 				<h1 class="text-center font-semibold max-sm:hidden">Amöben-Indikator</h1>
 			</a>
-			<div>
+			<div class="relative">
 				{#if data.user}
 					<button class="user-avatar size-10 rounded-full" onclick={handleMenuOpen}
 						>{data.user.users.username.substring(0, 1).toUpperCase()}
 					</button>
-					<div class="relative">
-						{#if data.user && menuOpen}
-							<div
-								id="menu"
-								class="absolute right-0 top-2 z-50 flex w-fit flex-col gap-2 rounded-b-lg bg-blue-500 p-4"
-							>
-								<div class="flex items-center gap-2">
-									{data.user.users.username}
-								</div>
-
-								{#if data.user.users.roleId === 1}
-									<a
-										href="/admin"
-										class="btn btn-secondary btn-small flex w-full items-center gap-2"
-									>
-										<i class={data.user.roles?.icon}></i>Administration
-									</a>
-								{:else if data.user.users.roleId === 2}
-									<div class="flex items-center gap-2 text-xs">
-										<i class={data.user.roles?.icon}></i>{data.user.roles?.name}
-									</div>
-								{:else}
-									<div
-										class="flex items-center gap-2 text-xs text-red-500"
-										title="Zum freischalten Tobias kontaktieren"
-									>
-										<i class={data.user.roles?.icon}></i>{data.user.roles?.name}
-									</div>
-								{/if}
-
-								<form action="/logout" method="POST">
-									<button class="btn btn-secondary btn-small w-full" type="submit">
-										<i class="fa-solid fa-right-from-bracket"></i>Logout
-									</button>
-								</form>
+					{#if data.user && menuOpen}
+						<div
+							id="menu"
+							class="absolute right-0 top-12 z-50 flex w-fit flex-col gap-2 rounded-b-lg bg-blue-500 p-4"
+						>
+							<div class="flex items-center gap-2">
+								{data.user.users.username}
 							</div>
-						{/if}
-					</div>
+
+							{#if data.user.users.roleId === 1}
+								<a href="/admin" class="btn btn-secondary btn-small flex w-full items-center gap-2">
+									<i class={data.user.roles?.icon}></i>Administration
+								</a>
+							{:else if data.user.users.roleId === 2}
+								<div class="flex items-center gap-2 text-xs">
+									<i class={data.user.roles?.icon}></i>{data.user.roles?.name}
+								</div>
+							{:else}
+								<div
+									class="flex items-center gap-2 text-xs text-red-500"
+									title="Zum freischalten Tobias kontaktieren"
+								>
+									<i class={data.user.roles?.icon}></i>{data.user.roles?.name}
+								</div>
+							{/if}
+
+							<form action="/logout" method="POST">
+								<button class="btn btn-secondary btn-small w-full" type="submit">
+									<i class="fa-solid fa-right-from-bracket"></i>Logout
+								</button>
+							</form>
+						</div>
+					{/if}
 				{:else}
 					<a class="btn btn-secondary btn-small" href="/login">
 						<i class="fa-solid fa-arrow-right-to-bracket"></i>Login
