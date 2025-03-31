@@ -15,7 +15,11 @@ if (!building && !process.env.SKIP_DB) {
     const mockClient = {
         query: async () => [],
         end: async () => { },
-        parsers: {}, // Add parsers to satisfy drizzle's expectations
+        // Add a parsers property to satisfy drizzle's expectations
+        parsers: {
+            // Mock parsers for any expected types
+            get: () => ({}),
+        },
     } as unknown as ReturnType<typeof postgres>;
     db = drizzle(mockClient, { schema });
 }
