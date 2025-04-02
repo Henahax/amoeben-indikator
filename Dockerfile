@@ -2,6 +2,8 @@ FROM node:latest
 
 WORKDIR /app
 
+ENV DATABASE_URL=postgresql://root:Holz1337@localhost:5432/amoeben-indikator
+
 COPY . .
 
 RUN npm ci

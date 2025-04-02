@@ -76,8 +76,6 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        env:
-          DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
         run: docker build -f Dockerfile -t henahax/amoeben-indikator:latest .
 
       - name: Push to Docker Hub
