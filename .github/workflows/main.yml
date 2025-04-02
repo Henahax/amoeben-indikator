@@ -78,7 +78,7 @@ jobs:
       - name: Build Docker image
         env:
           DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
-        run: docker build . --file Dockerfile --tag henahax/amoeben-indikator:latest
+        run: docker build -f Dockerfile -t henahax/amoeben-indikator:latest .
 
       - name: Push to Docker Hub
         run: docker push henahax/amoeben-indikator:latest

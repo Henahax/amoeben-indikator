@@ -8,6 +8,5 @@ RUN npm ci
 RUN npm run build
 RUN rm -rf src/ static/ docker-compose.yml docker-compose-dev.yml
 
-USER node:node
-
-CMD ["node","build/index.js"]
+EXPOSE 3000
+CMD ["node", "build"]
