@@ -10,6 +10,20 @@ on:
 jobs:
   Docker:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: Holz1337
+          POSTGRES_DB: amoeben-indikator
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,7 +40,7 @@ jobs:
 
       - name: Build
         env:
-          SKIP_DB: true
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/amoeben-indikator
         run: npm run build
 
       - name: Save version
