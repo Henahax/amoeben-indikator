@@ -40,7 +40,7 @@ jobs:
 
       - name: Build
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/amoeben-indikator
+          DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
         run: npm run build
 
       - name: Save version
