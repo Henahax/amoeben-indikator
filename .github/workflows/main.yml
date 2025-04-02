@@ -51,7 +51,10 @@ jobs:
       - name: Build
         env:
           DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
-        run: npm run build
+        run: |
+          npm run build
+          cp -r build/ docker-build/
+          cp package*.json docker-build/
 
       - name: Save version
         id: version
@@ -67,9 +70,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        env:
-          DATABASE_URL: postgresql://root:Holz1337@postgres:5432/amoeben-indikator
-        run: docker build . --file Dockerfile --build-arg DATABASE_URL=${DATABASE_URL} --tag henahax/amoeben-indikator:latest
+        run: docker build . --file Dockerfile --tag henahax/amoeben-indikator:latest
 
       - name: Push to Docker Hub
         run: docker push henahax/amoeben-indikator:latest
