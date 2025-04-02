@@ -38,15 +38,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Verify Database Connection
-        env:
-          DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
-        run: |
-          until pg_isready -h localhost -p 5432; do
-            echo "Waiting for database to be ready..."
-            sleep 5
-          done
-
       - name: Run Database Migrations
         env:
           DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
@@ -76,7 +67,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -f Dockerfile -t henahax/amoeben-indikator:latest .
+        run: docker build . --file Dockerfile --tag henahax/amoeben-indikator:latest
 
       - name: Push to Docker Hub
         run: docker push henahax/amoeben-indikator:latest
