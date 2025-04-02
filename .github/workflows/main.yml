@@ -38,6 +38,15 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Verify Database Connection
+        env:
+          DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
+        run: |
+          until pg_isready -h localhost -p 5432; do
+            echo "Waiting for database to be ready..."
+            sleep 5
+          done
+
       - name: Run Database Migrations
         env:
           DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
