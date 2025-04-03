@@ -7,9 +7,12 @@ until pg_isready -h db -U root -d amoeben-indikator; do
   sleep 2
 done
 
-echo "Database is ready. Running migrations and seeding..."
-npm run db:push
+# Run database migrations and seed
+echo "Running database migrations..."
+npx drizzle-kit push --config=drizzle.config.ts --force
+echo "Seeding database..."
 npm run db:seed
 
-echo "Starting the application..."
-exec "$@"
+# Start the application
+echo "Starting application..."
+exec node build/index.js
