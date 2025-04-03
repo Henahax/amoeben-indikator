@@ -5,6 +5,7 @@ import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db/db';
 import { users } from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
+import { error } from 'console';
 
 export const load: PageServerLoad = async (event) => {
     if (event.locals.user) {
@@ -43,8 +44,8 @@ export const actions: Actions = {
             const sessionToken = auth.generateSessionToken();
             const session = await auth.createSession(sessionToken, result[0].id);
             auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-        } catch (e) {
-            return fail(500, { message: 'Das Konto existiert bereits' });
+        } catch (e: any) {
+            return fail(500, { message: 'Das Konto existiert bereits', error: e.message, stack: e.stack });
         }
         return redirect(302, '/');
     }

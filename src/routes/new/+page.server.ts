@@ -53,9 +53,9 @@ export const actions: Actions = {
                 scaleId: Number(scaleId),
                 comment: comment.toString()
             });
-        } catch (e) {
+        } catch (e: any) {
             console.log(response);
-            return fail(500, { message: 'Ein Fehler ist aufgetreten 4' });
+            return fail(500, { message: 'Ein Fehler ist aufgetreten 4', error: e.message, stack: e.stack });
         }
         return redirect(302, '/');
     }
