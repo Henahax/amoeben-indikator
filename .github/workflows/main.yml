@@ -53,6 +53,7 @@ jobs:
           DATABASE_URL: postgresql://root:Holz1337@localhost:5432/amoeben-indikator
         run: |
           npm run build
+          mkdir -p docker-build
           cp -r build/ docker-build/
           cp package*.json docker-build/
 
