@@ -5,4 +5,4 @@ COPY docker-build/ .
 
 RUN npm ci --production
 
-CMD ["node", "build"]
+CMD ["node","build/index.js"]
