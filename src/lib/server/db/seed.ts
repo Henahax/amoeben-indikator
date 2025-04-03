@@ -96,10 +96,10 @@ const main = async () => {
                 .insert(roles)
                 .values(role)
                 .onConflictDoUpdate({
-                    target: roles.name,
+                    target: roles.id,
                     set: role
                 });
-            console.log(`Processed role: ${role.name}`);
+            console.log(`Processed user: ${role.name}`);
         }
 
         for (const user of seedUsers) {
@@ -118,10 +118,10 @@ const main = async () => {
                 .insert(entries)
                 .values(entry)
                 .onConflictDoUpdate({
-                    target: [entries.userId, entries.scaleId, entries.date],
+                    target: entries.id,
                     set: entry
                 });
-            console.log(`Processed entry: ${entry.comment}`);
+            console.log(`Processed user: ${entry.comment}`);
         }
 
         console.log('Database seeding completed');
