@@ -15,37 +15,31 @@ const db = drizzle(client);
 
 const seedScales = [
     {
-        id: 1,
         name: "Amöbe",
         value: 0,
         icon: "fa-solid fa-bacterium"
     },
     {
-        id: 2,
         name: "Baum",
         value: 0.2,
         icon: "fa-solid fa-tree"
     },
     {
-        id: 3,
         name: "Wurm",
         value: 0.4,
         icon: "fa-solid fa-worm"
     },
     {
-        id: 4,
         name: "Frosch",
         value: 0.6,
         icon: "fa-solid fa-frog"
     },
     {
-        id: 5,
         name: "Hund",
         value: 0.8,
         icon: "fa-solid fa-dog"
     },
     {
-        id: 6,
         name: "Mensch",
         value: 1,
         icon: "fa-solid fa-person"
@@ -53,36 +47,30 @@ const seedScales = [
 ];
 
 const seedRoles = [{
-    id: 1,
     name: "Administrator",
     icon: "fa-solid fa-user-tie"
 },
 {
-    id: 2,
     name: "Mitglied",
     icon: "fa-solid fa-check"
 },
 {
-    id: 3,
     name: "nicht verifiziert",
     icon: "fa-solid fa-xmark"
 }];
 
 const seedUsers = [{
-    id: 1,
     username: "Henahax",
     passwordHash: "$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE",
     roleId: 1
 }];
 
 const seedEntries = [{
-    id: 1,
     userId: 1,
     scaleId: 3,
     date: new Date("2024-12-09T09:55:02.235Z"),
     comment: "Kaffee verschüttet"
 }, {
-    id: 2,
     userId: 1,
     scaleId: 2,
     date: new Date("2024-12-10T16:22:40Z"),
@@ -108,10 +96,10 @@ const main = async () => {
                 .insert(roles)
                 .values(role)
                 .onConflictDoUpdate({
-                    target: roles.id,
+                    target: roles.name,
                     set: role
                 });
-            console.log(`Processed user: ${role.name}`);
+            console.log(`Processed role: ${role.name}`);
         }
 
         for (const user of seedUsers) {
@@ -130,10 +118,10 @@ const main = async () => {
                 .insert(entries)
                 .values(entry)
                 .onConflictDoUpdate({
-                    target: entries.id,
+                    target: [entries.userId, entries.scaleId, entries.date],
                     set: entry
                 });
-            console.log(`Processed user: ${entry.comment}`);
+            console.log(`Processed entry: ${entry.comment}`);
         }
 
         console.log('Database seeding completed');
