@@ -8,10 +8,7 @@ services:
       - PGID=1000
       - TZ=Europe/Berlin
       - PORT=3000
-      - DATABASE_URL=postgres://root:Holz1337@localhost:5432/amoeben-indikator
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=Holz1337
-      - POSTGRES_DB=amoeben-indikator
+      - DATABASE_URL=postgres://root:Holz1337@db:5432/amoeben-indikator
     ports:
       - 8080:3000
     depends_on:
