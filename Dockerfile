@@ -1,18 +1,20 @@
-# Stage 1: Build
-FROM node:latest AS builder
-
-WORKDIR /app
-COPY docker-build/ . 
-
-RUN npm ci
-RUN npm run build
-
-# Stage 2: Run
+# Use official Node.js image
 FROM node:latest
 
+# Set working directory
 WORKDIR /app
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
 
+# Copy package.json and package-lock.json first (for better caching)
+COPY docker-build/package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy the rest of the app (including source files)
+COPY docker-build/ .
+
+# Build the project
+RUN npm run build
+
+# Start the app
 CMD ["node", "build"]
