@@ -126,11 +126,6 @@ const main = async () => {
 
         console.log('Database seeding completed');
 
-        await client`SELECT setval(pg_get_serial_sequence('users', 'id'), (SELECT MAX(id) FROM users))`;
-        await client`SELECT setval(pg_get_serial_sequence('roles', 'id'), (SELECT MAX(id) FROM roles))`;
-        await client`SELECT setval(pg_get_serial_sequence('scales', 'id'), (SELECT MAX(id) FROM scales))`;
-        await client`SELECT setval(pg_get_serial_sequence('entries', 'id'), (SELECT MAX(id) FROM entries))`;
-
         await client.end();
 
     } catch (error) {
