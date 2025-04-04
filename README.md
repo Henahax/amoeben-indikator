@@ -5,11 +5,13 @@ Geeignet für Haustiere und Kollegen.
 
 ## 🛠️ Techstack
 
-- Docker
-- NodeJS
-- PostgresSQL
-- Sveltekit
-- TypeScript
-- Tailwind
-- Drizzle
-- Lucia
+| Technologie | Funktion |
+|-|-|
+|Docker|Virtualisierung|
+|NodeJS|Laufzeitumgebung|
+|PostgresSQL|Datenbank|
+|Sveltekit|JS Framework|
+|TypeScript|Skriptsprache|
+|Tailwind|CSS Framework|
+|Drizzle|ORM|
+|Lucia|Authentifizierung|

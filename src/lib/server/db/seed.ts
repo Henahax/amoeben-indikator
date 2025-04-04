@@ -102,6 +102,7 @@ const main = async () => {
         ]);
 
         console.log('🎉 Seeding complete!');
+
     } catch (err) {
         console.error('❌ Seeding failed:', err);
         throw err;
