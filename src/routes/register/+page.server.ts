@@ -1,11 +1,9 @@
 import { hash } from '@node-rs/argon2';
-// import { encodeBase32LowerCase } from '@oslojs/encoding';
 import { fail, redirect } from '@sveltejs/kit';
 import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db/db';
 import { users } from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
-import { error } from 'console';
 
 export const load: PageServerLoad = async (event) => {
     if (event.locals.user) {
@@ -28,8 +26,6 @@ export const actions: Actions = {
             return fail(400, { message: 'Ungültiges Passwort' });
         }
 
-        // const userId = generateUserId();
-
         const passwordHash = await hash(password, {
             // recommended minimum parameters
             memoryCost: 19456,
@@ -50,15 +46,6 @@ export const actions: Actions = {
         return redirect(302, '/');
     }
 };
-
-/*
-function generateUserId() {
-    // ID with 120 bits of entropy, or about the same as UUID v4.
-    const bytes = crypto.getRandomValues(new Uint8Array(15));
-    const id = encodeBase32LowerCase(bytes);
-    return id;
-}
-*/
 
 function validateUsername(username: unknown): username is string {
     return (

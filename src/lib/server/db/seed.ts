@@ -41,15 +41,9 @@ const seedUsers = [
 const seedEntries = [
     {
         userId: 1,
-        scaleId: 3,
-        date: new Date('2024-12-09T09:55:02.235Z'),
-        comment: 'Kaffee verschüttet'
-    },
-    {
-        userId: 1,
-        scaleId: 2,
-        date: new Date('2024-12-10T16:22:40Z'),
-        comment: 'Wieder Unmengen an unsinningen Nahrungsmitteln auf dem Tisch'
+        scaleId: 6,
+        date: new Date('1984-09-22T00:00:00.000Z'),
+        comment: 'Geburt'
     }
 ];
 
@@ -104,7 +98,7 @@ const main = async () => {
             resetSequence('users', 'id'),
             resetSequence('entries', 'id'),
             resetSequence('roles', 'id'),
-            resetSequence('scales', 'id') // if scales has serial id
+            resetSequence('scales', 'id')
         ]);
 
         console.log('🎉 Seeding complete!');
