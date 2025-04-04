@@ -1,9 +1,9 @@
-# Amöben-Indikator
+# 🦠 Amöben-Indikator
 
 Web-Applikation zum Bewerten von Verhalten.
 Geeignet für Haustiere und Kollegen.
 
-## Techstack
+## 🛠️ Techstack
 
 - Docker
 - NodeJS
