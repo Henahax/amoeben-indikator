@@ -118,7 +118,7 @@ const main = async () => {
                 .insert(entries)
                 .values(entry)
                 .onConflictDoUpdate({
-                    target: [entries.userId, entries.scaleId, entries.date],
+                    target: entries.id,
                     set: entry
                 });
             console.log(`Processed user: ${entry.comment}`);
