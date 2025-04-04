@@ -96,7 +96,7 @@ const main = async () => {
                 .insert(roles)
                 .values(role)
                 .onConflictDoUpdate({
-                    target: roles.id,
+                    target: roles.name,
                     set: role
                 });
             console.log(`Processed user: ${role.name}`);
@@ -118,13 +118,18 @@ const main = async () => {
                 .insert(entries)
                 .values(entry)
                 .onConflictDoUpdate({
-                    target: entries.id,
+                    target: [entries.userId, entries.scaleId, entries.date],
                     set: entry
                 });
             console.log(`Processed user: ${entry.comment}`);
         }
 
         console.log('Database seeding completed');
+
+        await client`SELECT setval(pg_get_serial_sequence('users', 'id'), (SELECT MAX(id) FROM users))`;
+        await client`SELECT setval(pg_get_serial_sequence('roles', 'id'), (SELECT MAX(id) FROM roles))`;
+        await client`SELECT setval(pg_get_serial_sequence('scales', 'id'), (SELECT MAX(id) FROM scales))`;
+        await client`SELECT setval(pg_get_serial_sequence('entries', 'id'), (SELECT MAX(id) FROM entries))`;
 
         await client.end();
 
