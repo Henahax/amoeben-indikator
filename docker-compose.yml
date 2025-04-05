@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  app:
+  amoeben-indikator-app:
     image: henahax/amoeben-indikator:latest
     container_name: amoeben-indikator
     environment:
@@ -8,14 +8,14 @@ services:
       - PGID=1000
       - TZ=Europe/Berlin
       - PORT=3000
-      - DATABASE_URL=postgres://root:Holz1337@db:5432/amoeben-indikator
+      - DATABASE_URL=postgres://root:Holz1337@amoeben-indikator-db:5432/amoeben-indikator
     ports:
       - 8080:3000
     depends_on:
-      - db
+      - amoeben-indikator-db
     restart: unless-stopped
 
-  db:
+  amoeben-indikator-db:
     image: postgres:latest
     container_name: amoeben-indikator-db
     environment:

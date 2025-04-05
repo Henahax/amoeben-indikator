@@ -1,7 +1,7 @@
 services:
-  db:
+  amoeben-indikator-db:
     image: postgres
-    container_name: db
+    container_name: amoeben-indikator-db
     restart: unless-stopped
     ports:
       - 5432:5432
@@ -11,9 +11,9 @@ services:
       POSTGRES_DB: amoeben-indikator
     volumes:
       - local_pgdata:/var/lib/postgresql/data
-  admin:
+  amoeben-indikator-admin:
     image: dpage/pgadmin4
-    container_name: pgadmin
+    container_name: amoeben-indikator-pgadmin
     restart: unless-stopped
     ports:
       - "8888:80"
