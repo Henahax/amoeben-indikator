@@ -3,13 +3,6 @@ import { eq, desc } from "drizzle-orm";
 import { entries, scales, users } from "$lib/server/db/schema";
 import { json } from '@sveltejs/kit';
 
-const myScales = await db.select().from(scales).orderBy(scales.value);
-const myEntries = await db.select().from(entries).leftJoin(scales, eq(scales.id, entries.scaleId)).leftJoin(users, eq(users.id, entries.userId)).orderBy(desc(entries.date)).limit(5);
-
-
-let api = { "score": 0 };
-api.score = getScore(myEntries, myScales);
-
 function getScore(entries: any, scales: any) {
 
     if (entries.length === 0) {
@@ -28,6 +21,10 @@ function getScore(entries: any, scales: any) {
     return Number((totalScore / entries.length).toFixed(2));
 }
 
-export function GET() {
+export async function GET() {
+    const myScales = await db.select().from(scales).orderBy(scales.value);
+    const myEntries = await db.select().from(entries).leftJoin(scales, eq(scales.id, entries.scaleId)).leftJoin(users, eq(users.id, entries.userId)).orderBy(desc(entries.date)).limit(5);
+    const api = { "score": getScore(myEntries, myScales) };
+
     return json(api);
 }
