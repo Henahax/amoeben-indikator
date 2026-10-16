@@ -1,44 +1,44 @@
-import { pgTable, serial, text, real, timestamp, integer } from 'drizzle-orm/pg-core';
-import { sql } from "drizzle-orm";
+import { sqliteTable, integer, text, real, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 
-export const users = pgTable('users', {
-	id: serial('id').primaryKey().notNull(),
-	username: text('username').notNull().unique(),
+export const users = sqliteTable('users', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	username: text('username').notNull(),
 	passwordHash: text('password_hash').notNull(),
 	roleId: integer('role_id').notNull().references(() => roles.id).default(3)
-});
+}, (table) => [uniqueIndex('users_username_lower_unique').on(sql`lower(${table.username})`)]);
 
-export const roles = pgTable('roles', {
-	id: serial('id').primaryKey().notNull(),
+export const roles = sqliteTable('roles', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
 	name: text('name').notNull().unique(),
 	icon: text('icon').notNull()
 });
 
-export const sessions = pgTable('sessions', {
+export const sessions = sqliteTable('sessions', {
 	id: text('id').primaryKey().notNull(),
 	userId: integer('user_id')
 		.notNull()
 		.references(() => users.id),
-	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
+	expiresAt: integer('expires_at', { mode: 'timestamp_ms' }).notNull()
 });
 
-export const scales = pgTable('scales', {
-	id: serial('id').primaryKey().notNull(),
+export const scales = sqliteTable('scales', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
 	name: text('name').notNull().unique(),
 	value: real('value').notNull(),
 	icon: text('icon').notNull()
 });
 
-export const entries = pgTable('entries', {
-	id: serial('id').primaryKey().notNull(),
-	userId: serial('user_id')
-		.notNull()
+export const entries = sqliteTable('entries', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	userId: integer('user_id')
 		.references(() => users.id),
-	scaleId: serial('scale_id')
+	authorName: text('author_name'),
+	scaleId: integer('scale_id')
 		.notNull()
 		.references(() => scales.id),
 	comment: text('comment').notNull(),
-	date: timestamp('date', { withTimezone: true, mode: 'date' }).notNull().default(sql`now()`)
+	date: integer('date', { mode: 'timestamp_ms' }).notNull().default(sql`(unixepoch() * 1000)`)
 });
 
 export type Session = typeof sessions.$inferSelect;

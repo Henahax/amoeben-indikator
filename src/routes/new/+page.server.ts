@@ -45,17 +45,15 @@ export const actions: Actions = {
             return fail(500, { message: 'Kommentar benötigt 3' });
         }
 
-        let response;
-
         try {
-            response = await db.insert(entries).values({
+            await db.insert(entries).values({
                 userId: myUser[0].users.id,
                 scaleId: Number(scaleId),
                 comment: comment.toString()
             });
-        } catch (e: any) {
-            console.log(response);
-            return fail(500, { message: 'Ein Fehler ist aufgetreten 4', error: e.message, stack: e.stack });
+        } catch (error: unknown) {
+            const details = error instanceof Error ? error : new Error(String(error));
+            return fail(500, { message: 'Ein Fehler ist aufgetreten 4', error: details.message, stack: details.stack });
         }
         return redirect(302, '/');
     }

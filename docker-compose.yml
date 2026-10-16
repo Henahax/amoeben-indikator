@@ -8,30 +8,13 @@ services:
       - PGID=1000
       - TZ=Europe/Berlin
       - PORT=3000
-      - DATABASE_URL=postgres://root:Holz1337@amoeben-indikator-db:5432/amoeben-indikator
-    ports:
-      - 8080:3000
-    depends_on:
-      - amoeben-indikator-db
-    restart: unless-stopped
-
-  amoeben-indikator-db:
-    image: postgres:latest
-    container_name: amoeben-indikator-db
-    environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=Holz1337
-      - POSTGRES_DB=amoeben-indikator
-      - PGDATA=/var/lib/postgresql/data/pgdata
+      - DATABASE_URL=/app/data/amoeben-indikator.db
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U root -d amoeben-indikator" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - app-data:/app/data
+    ports:
+      - "8080:3000"
     restart: unless-stopped
 
 volumes:
-  postgres-data:
+  app-data:
     name: amoeben-indikator-data

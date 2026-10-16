@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
@@ -26,7 +27,7 @@
 
 	<div class="flex flex-col items-center">
 		<p class="text-sm">Noch kein Konto?</p>
-		<a href="/register" class="btn btn-link">Registrieren</a>
+		<a href={resolve('/register')} class="btn btn-link">Registrieren</a>
 	</div>
 	<p class="text-center text-red-500">{form?.message ?? ''}</p>
 </form>

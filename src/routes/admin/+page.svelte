@@ -1,8 +1,9 @@
 <script lang="ts">
-	let { data }: { data: any } = $props();
+	import type { PageData } from './$types';
 
-	function formatDate(dateStr: string): string {
-		const date = new Date(dateStr);
+	let { data }: { data: PageData } = $props();
+
+	function formatDate(date: Date): string {
 		return date.toLocaleString('de-DE', {
 			day: '2-digit',
 			month: '2-digit',
@@ -46,7 +47,7 @@
 			<div class="font-bold">Rolle</div>
 			<div></div>
 		</div>
-		{#each data.users as user}
+		{#each data.users as user (user.users.id)}
 			<div class="col-span-full grid grid-cols-subgrid items-center p-2 hover:bg-neutral-50">
 				<div>{user.users.username}</div>
 				<select
@@ -54,7 +55,7 @@
 					disabled={data.user.users.id === user.users.id}
 					onchange={(e) => handleRoleChange(e, user.users.id)}
 				>
-					{#each data.roles as role}
+					{#each data.roles as role (role.id)}
 						<option value={role.id} selected={user.users.roleId === role.id}>{role.name}</option>
 					{/each}
 				</select>
@@ -86,10 +87,10 @@
 			</div>
 			<div></div>
 		</div>
-		{#each data.entries as entry}
+		{#each data.entries as entry (entry.entries.id)}
 			<div class="col-span-full grid grid-cols-subgrid items-center p-2 hover:bg-neutral-50">
 				<div class="flex flex-col">
-					<span>{entry.users.username}</span>
+					<span>{entry.entries.authorName ?? entry.users?.username ?? 'Unbekannt'}</span>
 					<span class="text-xs">{formatDate(entry.entries.date)}</span>
 				</div>
 				<div class="flex flex-col">

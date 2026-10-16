@@ -1,62 +1,19 @@
 import { config } from 'dotenv';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { scales, users, entries, roles } from './schema';
-import { sql } from 'drizzle-orm';
+import { mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import Database from 'better-sqlite3';
+import { and, eq } from 'drizzle-orm';
+import { entries, roles, scales, sessions, users } from './schema';
+import { seedRoles, seedScales } from './seed-data';
 
 // Load env vars
 config();
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) throw new Error('DATABASE_URL is not set');
-
-const client = postgres(connectionString);
+const databasePath = process.env.DATABASE_URL || './data/amoeben-indikator.db';
+mkdirSync(dirname(databasePath), { recursive: true });
+const client = new Database(databasePath);
 const db = drizzle(client);
-
-// Seed Data
-const seedScales = [
-    { name: 'Amöbe', value: 0, icon: 'fa-solid fa-bacterium' },
-    { name: 'Baum', value: 0.2, icon: 'fa-solid fa-tree' },
-    { name: 'Wurm', value: 0.4, icon: 'fa-solid fa-worm' },
-    { name: 'Frosch', value: 0.6, icon: 'fa-solid fa-frog' },
-    { name: 'Hund', value: 0.8, icon: 'fa-solid fa-dog' },
-    { name: 'Mensch', value: 1, icon: 'fa-solid fa-person' }
-];
-
-const seedRoles = [
-    { name: 'Administrator', icon: 'fa-solid fa-user-tie' },
-    { name: 'Mitglied', icon: 'fa-solid fa-check' },
-    { name: 'nicht verifiziert', icon: 'fa-solid fa-xmark' }
-];
-
-const seedUsers = [
-    {
-        username: 'Henahax',
-        passwordHash:
-            '$argon2id$v=19$m=19456,t=2,p=1$oz7nt4RmGERDhcfJONhfXQ$o0xhN09VyoboDZ+d+BHQM+JSAy2b0zW8ADdfFnTv/aE',
-        roleId: 1
-    }
-];
-
-const seedEntries = [
-    {
-        userId: 1,
-        scaleId: 6,
-        date: new Date('1984-09-22T00:00:00.000Z'),
-        comment: 'Geburt'
-    }
-];
-
-// Reset sequence helper
-const resetSequence = async (table: string, column: string) => {
-    const sequenceName = `${table}_${column}_seq`;
-    await db.execute(
-        sql.raw(
-            `SELECT setval('${sequenceName}', (SELECT COALESCE(MAX(${column}), 0) FROM ${table}))`
-        )
-    );
-    console.log(`Sequence reset: ${sequenceName}`);
-};
 
 const main = async () => {
     try {
@@ -77,29 +34,57 @@ const main = async () => {
             console.log(`✅ Role: ${role.name}`);
         }
 
-        for (const user of seedUsers) {
-            await db
-                .insert(users)
-                .values(user)
-                .onConflictDoUpdate({ target: users.username, set: user });
-            console.log(`✅ User: ${user.username}`);
+        for (const seededUsername of ['Rainer', 'Henahax']) {
+            const [seededUser] = await db
+                .select({ id: users.id })
+                .from(users)
+                .where(eq(users.username, seededUsername))
+                .limit(1);
+
+            if (seededUser) {
+                await db
+                    .update(entries)
+                    .set({ userId: null, authorName: 'Rainer' })
+                    .where(eq(entries.userId, seededUser.id));
+                await db.delete(sessions).where(eq(sessions.userId, seededUser.id));
+                await db.delete(users).where(eq(users.id, seededUser.id));
+            }
         }
 
-        for (const entry of seedEntries) {
-            await db
-                .insert(entries)
-                .values(entry)
-                .onConflictDoNothing(); // or upsert if needed
-            console.log(`✅ Entry: ${entry.comment}`);
+        const [existingAdmin] = await db.select({ id: users.id }).from(users).where(eq(users.roleId, 1)).limit(1);
+        if (!existingAdmin) {
+            const [firstUser] = await db.select({ id: users.id }).from(users).orderBy(users.id).limit(1);
+            if (firstUser) {
+                await db.update(users).set({ roleId: 1 }).where(eq(users.id, firstUser.id));
+            }
         }
 
-        // Reset sequences after seeding
-        await Promise.all([
-            resetSequence('users', 'id'),
-            resetSequence('entries', 'id'),
-            resetSequence('roles', 'id'),
-            resetSequence('scales', 'id')
-        ]);
+        const [humanScale] = await db
+            .select({ id: scales.id })
+            .from(scales)
+            .where(eq(scales.name, 'Mensch'))
+            .limit(1);
+
+        const birthEntry = {
+            userId: null,
+            authorName: 'Rainer',
+            scaleId: humanScale.id,
+            date: new Date('1984-09-22T00:00:00.000Z'),
+            comment: 'Geburt'
+        };
+
+        const [existingBirthEntry] = await db
+            .select({ id: entries.id })
+            .from(entries)
+            .where(and(eq(entries.authorName, 'Rainer'), eq(entries.comment, 'Geburt')))
+            .limit(1);
+
+        if (existingBirthEntry) {
+            await db.update(entries).set(birthEntry).where(eq(entries.id, existingBirthEntry.id));
+        } else {
+            await db.insert(entries).values(birthEntry);
+        }
+        console.log('✅ Entry: Geburt (22.09.1984 00:00)');
 
         console.log('🎉 Seeding complete!');
 
@@ -107,7 +92,7 @@ const main = async () => {
         console.error('❌ Seeding failed:', err);
         throw err;
     } finally {
-        await client.end();
+        client.close();
     }
 };
 

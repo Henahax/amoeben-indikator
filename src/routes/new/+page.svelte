@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import type { PageProps } from './$types';
 
-	let { form, data }: { form: ActionData; data: any } = $props();
+	let { form, data }: PageProps = $props();
 </script>
 
 <form method="post" action="?/new" use:enhance class="mx-auto flex w-full max-w-sm flex-col gap-4">
@@ -10,7 +10,7 @@
 	<div class="flex flex-col">
 		<label for="value">Bewertung</label>
 		<select id="value" name="value">
-			{#each data.scales as scale}
+			{#each data.scales as scale (scale.id)}
 				<option value={scale.id}>
 					{scale.name}
 				</option>

@@ -1,5 +1,6 @@
 import { hash } from '@node-rs/argon2';
 import { fail, redirect } from '@sveltejs/kit';
+import { sql } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db/db';
 import { users } from '$lib/server/db/schema';
@@ -26,6 +27,15 @@ export const actions: Actions = {
             return fail(400, { message: 'Ungültiges Passwort' });
         }
 
+        const [existingUser] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(sql`LOWER(${users.username}) = LOWER(${username})`)
+            .limit(1);
+        if (existingUser) {
+            return fail(400, { message: 'Dieser Benutzername ist bereits vergeben' });
+        }
+
         const passwordHash = await hash(password, {
             // recommended minimum parameters
             memoryCost: 19456,
@@ -34,15 +44,29 @@ export const actions: Actions = {
             parallelism: 1
         });
 
+        let userId: number;
         try {
-            const result = await db.insert(users).values({ username, passwordHash }).returning();
-
-            const sessionToken = auth.generateSessionToken();
-            const session = await auth.createSession(sessionToken, result[0].id);
-            auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-        } catch (e: any) {
-            return fail(500, { message: 'Das Konto existiert bereits', error: e.message, stack: e.stack });
+            const [result] = await db
+                .insert(users)
+                .values({
+                    username,
+                    passwordHash,
+                    roleId: sql<number>`CASE WHEN NOT EXISTS (SELECT 1 FROM ${users}) THEN 1 ELSE 3 END`
+                })
+                .returning();
+            userId = result.id;
+        } catch (error: unknown) {
+            console.error('Account registration failed:', error);
+            if (isUniqueConstraintError(error)) {
+                return fail(400, { message: 'Dieser Benutzername ist bereits vergeben' });
+            }
+            return fail(500, { message: 'Die Registrierung ist fehlgeschlagen. Bitte versuche es später erneut.' });
         }
+
+        const sessionToken = auth.generateSessionToken();
+        const session = await auth.createSession(sessionToken, userId);
+        auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+
         return redirect(302, '/');
     }
 };
@@ -54,6 +78,15 @@ function validateUsername(username: unknown): username is string {
         username.length <= 31 &&
         /^[a-zA-Z0-9_-]+$/.test(username)
     );
+}
+
+function isUniqueConstraintError(error: unknown): boolean {
+	return (
+		typeof error === 'object' &&
+		error !== null &&
+		'code' in error &&
+		error.code === 'SQLITE_CONSTRAINT_UNIQUE'
+	);
 }
 
 function validatePassword(password: unknown): password is string {

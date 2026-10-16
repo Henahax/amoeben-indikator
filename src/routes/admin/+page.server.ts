@@ -19,7 +19,7 @@ export const load: PageServerLoad = async (event) => {
 
     const myUsers = await db.select().from(users).leftJoin(roles, eq(roles.id, users.roleId)).orderBy(users.id);
     const myRoles = await db.select().from(roles).orderBy(roles.id);
-    const myEntries = await db.select().from(entries).leftJoin(scales, eq(scales.id, entries.scaleId)).leftJoin(users, eq(users.id, entries.userId)).orderBy(desc(entries.date));
+    const myEntries = await db.select().from(entries).innerJoin(scales, eq(scales.id, entries.scaleId)).leftJoin(users, eq(users.id, entries.userId)).orderBy(desc(entries.date));
 
     return {
         user: myUser[0],
