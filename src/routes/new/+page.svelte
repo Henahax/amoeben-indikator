@@ -22,7 +22,10 @@
 		<textarea id="comment" name="comment" placeholder="Kommentar"></textarea>
 	</div>
 
-	<button class="btn btn-primary self-center"><i class="fa-solid fa-paper-plane"></i>Senden</button>
+	<button class="btn btn-primary self-center">
+		<i class="fa-solid fa-paper-plane"></i>
+		Senden
+	</button>
 
 	<p class="text-center text-red-500">{form?.message ?? ''}</p>
 </form>

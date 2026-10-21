@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { calculateScore, getHighestReachedScaleId, getScaleThreshold } from '$lib/score';
+	import { calculateScore, getHighestReachedScaleId, getScaleThreshold } from '#lib/score.js';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -17,7 +17,6 @@
 			minute: '2-digit'
 		});
 	}
-
 </script>
 
 <div class="flex flex-col gap-16">
@@ -38,19 +37,25 @@
 				{/each}
 			</div>
 
-			<progress value={score} max="1" class="w-full px-2 sm:px-6" title={score.toString()}
+			<progress
+				value={score}
+				max="1"
+				class="w-full px-2 sm:px-6"
+				title={score.toString()}
 			></progress>
 		</div>
 	</div>
 	<div class="flex flex-col gap-8">
 		{#if data.user && data.user.users.roleId !== 3}
-			<a href={resolve('/new')} class="btn btn-primary self-center"
-				><i class="fa-solid fa-plus"></i>Neuer Eintrag</a
-			>
+			<a href={resolve('new')} class="btn btn-primary self-center">
+				<i class="fa-solid fa-plus"></i>
+				Neuer Eintrag
+			</a>
 		{:else}
-			<button class="btn btn-primary self-center" title="Bitte verifizieren lassen" disabled
-				><i class="fa-solid fa-plus"></i>Neuer Eintrag</button
-			>
+			<button class="btn btn-primary self-center" title="Bitte verifizieren lassen" disabled>
+				<i class="fa-solid fa-plus"></i>
+				Neuer Eintrag
+			</button>
 		{/if}
 
 		<div
@@ -59,7 +64,9 @@
 			{#each data.entries as entry (entry.entries.id)}
 				<div class="col-span-3 grid grid-cols-subgrid items-center py-4">
 					<div>
-						<div class="text-lg">{entry.entries.authorName ?? entry.users?.username ?? 'Unbekannt'}</div>
+						<div class="text-lg">
+							{entry.entries.authorName ?? entry.users?.username ?? 'Unbekannt'}
+						</div>
 						<div class="text-xs">{formatDate(entry.entries.date)}</div>
 					</div>
 					<div class="primary text-center text-2xl">

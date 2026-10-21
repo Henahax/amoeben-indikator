@@ -39,9 +39,10 @@
 			required
 		/>
 	</div>
-	<button class="btn btn-primary self-center"
-		><i class="fa-solid fa-pen-to-square"></i>Registrieren</button
-	>
+	<button class="btn btn-primary self-center">
+		<i class="fa-solid fa-pen-to-square"></i>
+		Registrieren
+	</button>
 
 	<p class="text-center text-sm">
 		Das erste registrierte Konto erhält Adminrechte. Weitere Konten müssen von einem Administrator

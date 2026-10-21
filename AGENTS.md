@@ -4,4 +4,4 @@
 
 ## Shared guidance
 
-If the sibling `../agents` checkout exists, read `../agents/AGENTS.md`. Otherwise, use the [canonical shared guidance](https://github.com/Henahax/agents/blob/main/AGENTS.md). Load only task-relevant principles, rules, and skills; do not maintain a per-project skills list.
+If an `agents` folder is located next to this project folder, read its `AGENTS.md` file. Otherwise, use the [shared guidance online](https://github.com/Henahax/agents/blob/main/AGENTS.md). Resolve relative paths in the shared guidance from the `agents` folder. Load only task-relevant rules and skills; do not maintain a per-project skills list.
