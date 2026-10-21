@@ -22,12 +22,15 @@
 		<input id="password" name="password" type="password" placeholder="Passwort" />
 	</div>
 	<div class="flex flex-col items-center gap-2">
-		<button class="btn btn-primary"><i class="fa-solid fa-arrow-right-to-bracket"></i>Login</button>
+		<button class="btn btn-primary">
+			<i class="fa-solid fa-arrow-right-to-bracket"></i>
+			Login
+		</button>
 	</div>
 
 	<div class="flex flex-col items-center">
 		<p class="text-sm">Noch kein Konto?</p>
-		<a href={resolve('/register')} class="btn btn-link">Registrieren</a>
+		<a href={resolve('register')} class="btn btn-link">Registrieren</a>
 	</div>
 	<p class="text-center text-red-500">{form?.message ?? ''}</p>
 </form>

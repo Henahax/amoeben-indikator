@@ -1,12 +1,19 @@
 import { sqliteTable, integer, text, real, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
-export const users = sqliteTable('users', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	username: text('username').notNull(),
-	passwordHash: text('password_hash').notNull(),
-	roleId: integer('role_id').notNull().references(() => roles.id).default(3)
-}, (table) => [uniqueIndex('users_username_lower_unique').on(sql`lower(${table.username})`)]);
+export const users = sqliteTable(
+	'users',
+	{
+		id: integer('id').primaryKey({ autoIncrement: true }),
+		username: text('username').notNull(),
+		passwordHash: text('password_hash').notNull(),
+		roleId: integer('role_id')
+			.notNull()
+			.references(() => roles.id)
+			.default(3)
+	},
+	(table) => [uniqueIndex('users_username_lower_unique').on(sql`lower(${table.username})`)]
+);
 
 export const roles = sqliteTable('roles', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
@@ -31,14 +38,15 @@ export const scales = sqliteTable('scales', {
 
 export const entries = sqliteTable('entries', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
-	userId: integer('user_id')
-		.references(() => users.id),
+	userId: integer('user_id').references(() => users.id),
 	authorName: text('author_name'),
 	scaleId: integer('scale_id')
 		.notNull()
 		.references(() => scales.id),
 	comment: text('comment').notNull(),
-	date: integer('date', { mode: 'timestamp_ms' }).notNull().default(sql`(unixepoch() * 1000)`)
+	date: integer('date', { mode: 'timestamp_ms' })
+		.notNull()
+		.default(sql`(unixepoch() * 1000)`)
 });
 
 export type Session = typeof sessions.$inferSelect;

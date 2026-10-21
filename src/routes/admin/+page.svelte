@@ -94,9 +94,10 @@
 					<span class="text-xs">{formatDate(entry.entries.date)}</span>
 				</div>
 				<div class="flex flex-col">
-					<span class="flex items-center gap-2"
-						><i class={entry.scales.icon}></i>{entry.scales.name}</span
-					>
+					<span class="flex items-center gap-2">
+						<i class={entry.scales.icon}></i>
+						{entry.scales.name}
+					</span>
 					<span class="text-xs">{entry.entries.comment}</span>
 				</div>
 				<form action="?/deleteEntry" method="POST" onsubmit={(e) => confirmDelete(e, 'entry')}>
